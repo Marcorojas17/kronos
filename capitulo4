@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRONOS · MD-33 · RNEL V8</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a080f;
+            color: #e0e0f0;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a142b; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+
+        #canvas-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem 0 1.5rem;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+            margin-bottom: 3rem;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 3.8rem;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #D4AF37, #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+        }
+        .subhead {
+            font-size: 0.9rem;
+            letter-spacing: 6px;
+            color: #b3a5d9;
+            margin-top: 0.2rem;
+            text-transform: uppercase;
+        }
+        .subhead span {
+            color: #D4AF37;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+        h1 {
+            font-size: 2.8rem;
+            color: #D4AF37;
+            text-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #00ccff;
+            text-shadow: 0 0 15px rgba(0, 204, 255, 0.2);
+            margin: 2.5rem 0 1rem;
+            border-left: 4px solid #D4AF37;
+            padding-left: 1rem;
+        }
+        h3 {
+            color: #ff66cc;
+            text-shadow: 0 0 10px rgba(255, 102, 204, 0.2);
+            margin: 1.8rem 0 0.5rem;
+        }
+
+        .capitulo-marker {
+            font-size: 0.8rem;
+            color: #D4AF37;
+            letter-spacing: 2px;
+            background: rgba(212, 175, 55, 0.1);
+            display: inline-block;
+            padding: 0.2rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid #D4AF37;
+            margin-bottom: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            font-weight: 300;
+        }
+        .highlight {
+            color: #D4AF37;
+            font-weight: 700;
+        }
+        .neon-box {
+            background: rgba(45, 27, 105, 0.25);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 1.8rem 2rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.05);
+        }
+        .neon-box strong {
+            color: #00ccff;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .card-activo {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 1.2rem;
+            transition: 0.3s;
+        }
+        .card-activo:hover {
+            border-color: #D4AF37;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+        }
+        .card-activo .titulo {
+            color: #D4AF37;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+        .card-activo .precio {
+            color: #00ccff;
+            font-weight: 700;
+            font-size: 1.6rem;
+        }
+
+        .lecciones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+        .leccion-item {
+            background: rgba(0,0,0,0.4);
+            border-left: 3px solid #D4AF37;
+            padding: 0.8rem 1.2rem;
+            border-radius: 0 8px 8px 0;
+            transition: 0.2s;
+        }
+        .leccion-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            transform: translateX(5px);
+        }
+        .leccion-item .num {
+            color: #ff66cc;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .cita {
+            font-style: italic;
+            font-size: 1.1rem;
+            border-left: 4px solid #D4AF37;
+            padding-left: 1.5rem;
+            margin: 1.8rem 0;
+            color: #d4caff;
+        }
+        .cita .autor {
+            display: block;
+            margin-top: 0.3rem;
+            font-style: normal;
+            color: #D4AF37;
+            font-weight: 700;
+        }
+
+        .btn-neon {
+            display: inline-block;
+            background: transparent;
+            border: 2px solid #D4AF37;
+            color: #D4AF37;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.8rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        .btn-neon:hover {
+            background: #D4AF37;
+            color: #0a080f;
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.5);
+            transform: scale(1.05);
+        }
+        .btn-neon.secundario {
+            border-color: #00ccff;
+            color: #00ccff;
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.1);
+        }
+        .btn-neon.secundario:hover {
+            background: #00ccff;
+            color: #0a080f;
+            box-shadow: 0 0 60px rgba(0, 204, 255, 0.4);
+        }
+
+        .producto-card {
+            background: linear-gradient(145deg, #1a142b, #0a080f);
+            border: 2px solid #D4AF37;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2.5rem 0;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
+        }
+        .producto-card .precio {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: #D4AF37;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+        .producto-card .detalle {
+            color: #b3a5d9;
+            margin: 0.5rem 0 1.5rem;
+        }
+
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.15);
+            text-align: center;
+            font-size: 0.8rem;
+            color: #5a4e7a;
+        }
+        .footer .brand {
+            color: #D4AF37;
+        }
+
+        .folio-badge {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #D4AF37;
+            border-radius: 30px;
+            padding: 0.3rem 1.5rem;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            color: #D4AF37;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 700px) {
+            .logo { font-size: 2.5rem; letter-spacing: 4px; }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.6rem; }
+            .grid-2, .lecciones { grid-template-columns: 1fr; }
+            .producto-card .precio { font-size: 2.4rem; }
+            .btn-neon { font-size: 0.9rem; padding: 0.6rem 1.5rem; }
+            .neon-box { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas-bg"></canvas>
+    <div class="container">
+
+        <header class="header">
+            <div class="logo">KRONOS</div>
+            <div class="subhead">MD-33 · <span>RNEL V8 · KERNEL BANANA 3 PRO K</span></div>
+        </header>
+
+        <div class="capitulo-marker">▸ CÓDICE MD-33 ◂</div>
+        <h1>Sal del Juego del Olvido</h1>
+
+        <p style="font-size:1.1rem;">No viniste a buscar tu propósito. Viniste a <span class="highlight">RECORDARLO</span>.</p>
+
+        <div class="folio-badge">FOLIO SAFE CREATIVE 2607146379465</div>
+
+        <div class="neon-box">
+            <h3 style="margin-top:0; color:#D4AF37;">⚡ MD-33 · LAS 33 LLAVES DEL RECUERDO</h3>
+            <p>Un sistema de ingeniería de frecuencia diseñado por <strong>Marco Antonio Rojas Valdovinos</strong> para despertar tu <strong>Memoria Divina</strong> y salir del bucle de escasez.</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; margin-top:1rem;">
+                <div style="background:rgba(0,0,0,0.3); padding:0.8rem; border-radius:10px; border-left:3px solid #D4AF37;">
+                    <div style="color:#D4AF37; font-weight:700;">FASE 1</div>
+                    <div style="font-size:0.9rem; color:#b3a5d9;">11 Llaves del Despertar</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.3); padding:0.8rem; border-radius:10px; border-left:3px solid #00ccff;">
+                    <div style="color:#00ccff; font-weight:700;">FASE 2</div>
+                    <div style="font-size:0.9rem; color:#b3a5d9;">RNEL V8 · Recodifica tu Esencia</div>
+                </div>
+                <div style="background:rgba(0,0,0,0.3); padding:0.8rem; border-radius:10px; border-left:3px solid #ff66cc;">
+                    <div style="color:#ff66cc; font-weight:700;">FASE 3</div>
+                    <div style="font-size:0.9rem; color:#b3a5d9;">KERNEL BANANA 3 PRO K</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>¿Qué es MD-33?</h2>
+        <p>Es tu <strong>Asistente de Propósito Automatizado</strong>. Un sistema de 33 llaves que desinstala el firmware kármico del árbol genealógico y restaura tu <strong>Coherencia de Fase Total</strong> a <span class="highlight">999.999 THz</span>.</p>
+
+        <p>No es un curso, no es un coach, no es una terapia infinita. Es un <strong>manual de ingeniería de frecuencia</strong> que te devuelve el control sobre tu realidad.</p>
+
+        <div class="grid-2">
+            <div class="card-activo">
+                <div class="titulo">🔑 LLAVE 1</div>
+                <div style="font-size:0.9rem; color:#b3a5d9;">EL JUEGO DEL OLVIDO</div>
+                <div style="margin-top:0.5rem;">Te hicieron creer que vales por lo que produces, que tu propósito está afuera y que ya es tarde. Esa es la trampa.</div>
+            </div>
+            <div class="card-activo" style="border-color:#00ccff;">
+                <div class="titulo" style="color:#00ccff;">⚡ EJERCICIO INICIAL</div>
+                <div style="font-size:0.9rem; color:#b3a5d9;">2 minutos</div>
+                <div style="margin-top:0.5rem;">Escribe: ¿Qué hacías de niño por horas sin que te pagaran? Ahí está la pista de tu Llave 2.</div>
+            </div>
+        </div>
+
+        <div class="cita">
+            "El que no sabe que está en el Juego del Olvido, sigue jugando. El que lo sabe, ya empezó a ganar."
+            <span class="autor">— Marco Valdovinos · Creador MD-33</span>
+        </div>
+
+        <h2>El sistema completo</h2>
+        <p>MD-33 incluye <strong>33 llaves</strong> distribuidas en 3 fases, un <strong>Blueprint RNEL V8</strong> personalizado y tu <strong>Certificado de Coherencia de Fase</strong> con tu nombre.</p>
+
+        <div style="background:rgba(0,204,255,0.05); border:1px solid #00ccff; border-radius:12px; padding:1.5rem; margin:1.5rem 0;">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem; text-align:center;">
+                <div><span style="color:#D4AF37; font-weight:700;">33</span><br><span style="font-size:0.8rem; color:#b3a5d9;">LLAVES MAESTRAS</span></div>
+                <div><span style="color:#00ccff; font-weight:700;">8</span><br><span style="font-size:0.8rem; color:#b3a5d9;">PASOS RNEL V8</span></div>
+                <div><span style="color:#ff66cc; font-weight:700;">1</span><br><span style="font-size:0.8rem; color:#b3a5d9;">KERNEL BANANA 3 PRO K</span></div>
+            </div>
+        </div>
+
+        <div class="producto-card">
+            <p style="font-family:'Orbitron',sans-serif; color:#D4AF37; letter-spacing:2px; font-size:1.4rem;">MD-33 · LAS 33 LLAVES</p>
+            <div class="precio">$199 MXN</div>
+            <div class="detalle">PDF completo + Blueprint RNEL V8 + Certificado de Coherencia</div>
+            <a href="#" class="btn-neon" id="btn-md33">Activar mi MD-33</a>
+            <p style="margin-top:0.8rem; font-size:0.8rem; color:#5a4e7a;">* Entrega inmediata · Folio 2607146379465</p>
+        </div>
+
+        <div style="text-align:center; margin:2rem 0;">
+            <span style="display:inline-block; background:#1a142b; border:1px solid #D4AF37; padding:0.3rem 2rem; border-radius:30px; color:#D4AF37; font-size:0.8rem; letter-spacing:2px;">KRONOS © 2026 · Safe Creative 2607146379465</span>
+        </div>
+
+        <footer class="footer">
+            <p><span class="brand">MD-33 · RNEL V8</span> — El sistema de 33 llaves para salir del Juego del Olvido.</p>
+            <p style="margin-top:0.5rem;">Creado por Marco Antonio Rojas Valdovinos · Ecatepec, México</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Fondo de partículas estilo forense
+        (function() {
+            const canvas = document.getElementById('canvas-bg');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 70;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.speedY = (Math.random() - 0.5) * 0.3;
+                    this.opacity = Math.random() * 0.4 + 0.1;
+                    this.color = ['#D4AF37', '#00ccff', '#b3a5d9', '#ffffff'][Math.floor(Math.random() * 4)];
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 6;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                ctx.globalAlpha = 0.04;
+                ctx.strokeStyle = '#D4AF37';
+                ctx.lineWidth = 0.3;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // Botón de compra
+        document.getElementById('btn-md33').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('🔑 Link de pago: Mercado Pago / Stripe (sustituir por tu link real)');
+            // Aquí iría el link real de pago de $199 MXN
+        });
+    </script>
+</body>
+</html>
