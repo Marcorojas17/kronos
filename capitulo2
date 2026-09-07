@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRONOS · Capítulo 2 · El Portal LIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0b0719;
+            color: #e0e0ff;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a142b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 4px;
+        }
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            padding: 2rem 0 1.5rem;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            margin-bottom: 3rem;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 3.5rem;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, #FFD700, #FF8C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+        .subhead {
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            color: #b3a5d9;
+            margin-top: 0.2rem;
+            text-transform: uppercase;
+        }
+        .subhead span {
+            color: #00ffff;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Títulos */
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+        h1 {
+            font-size: 2.8rem;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #00ffff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            margin: 2.5rem 0 1rem;
+            border-left: 4px solid #FFD700;
+            padding-left: 1rem;
+        }
+        h3 {
+            color: #ff66ff;
+            text-shadow: 0 0 10px rgba(255, 102, 255, 0.3);
+            margin: 1.8rem 0 0.5rem;
+        }
+
+        .capitulo-marker {
+            font-size: 0.8rem;
+            color: #ff66ff;
+            letter-spacing: 2px;
+            background: rgba(255, 102, 255, 0.1);
+            display: inline-block;
+            padding: 0.2rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid #ff66ff;
+            margin-bottom: 1.2rem;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            font-weight: 300;
+        }
+        .highlight {
+            color: #FFD700;
+            font-weight: 700;
+        }
+        .neon-box {
+            background: rgba(45, 27, 105, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 1.8rem 2rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
+        }
+        .neon-box strong {
+            color: #00ffff;
+        }
+
+        .protocolo-card {
+            background: #0b0719;
+            border: 2px solid #ff66ff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+            box-shadow: 0 0 40px rgba(255, 102, 255, 0.1);
+        }
+        .protocolo-card .step {
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.5rem;
+        }
+        .protocolo-card .num {
+            color: #ff66ff;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .protocolo-card .desc {
+            color: #b3a5d9;
+        }
+        .protocolo-card .ok {
+            color: #00ff88;
+            margin-left: auto;
+            font-weight: 700;
+        }
+
+        .lecciones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+        .leccion-item {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 3px solid #FFD700;
+            padding: 0.8rem 1.2rem;
+            border-radius: 0 8px 8px 0;
+            transition: 0.2s;
+        }
+        .leccion-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateX(5px);
+        }
+        .leccion-item .num {
+            color: #ff66ff;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .cita {
+            font-style: italic;
+            font-size: 1.1rem;
+            border-left: 4px solid #ff66ff;
+            padding-left: 1.5rem;
+            margin: 1.8rem 0;
+            color: #d4caff;
+        }
+        .cita .autor {
+            display: block;
+            margin-top: 0.3rem;
+            font-style: normal;
+            color: #FFD700;
+            font-weight: 700;
+        }
+
+        .btn-neon {
+            display: inline-block;
+            background: transparent;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0.8rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        .btn-neon:hover {
+            background: #00ffff;
+            color: #0b0719;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.6);
+            transform: scale(1.04);
+        }
+
+        .producto-card {
+            background: linear-gradient(145deg, #1a142b, #0b0719);
+            border: 2px solid #FFD700;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2.5rem 0;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.15);
+        }
+        .producto-card .precio {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: #FFD700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+        .producto-card .detalle {
+            color: #b3a5d9;
+            margin: 0.5rem 0 1.5rem;
+        }
+
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.15);
+            text-align: center;
+            font-size: 0.8rem;
+            color: #5a4e7a;
+        }
+        .footer .brand {
+            color: #FFD700;
+        }
+
+        @media (max-width: 700px) {
+            .logo { font-size: 2.2rem; letter-spacing: 3px; }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.6rem; }
+            .lecciones { grid-template-columns: 1fr; }
+            .producto-card .precio { font-size: 2.4rem; }
+            .btn-neon { font-size: 1rem; padding: 0.6rem 2rem; }
+            .neon-box { padding: 1rem; }
+            .protocolo-card .step { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <div class="container">
+
+        <header class="header">
+            <div class="logo">KRONOS</div>
+            <div class="subhead">Capítulo 2 · <span>El Portal LIVE</span></div>
+        </header>
+
+        <div class="capitulo-marker">▸ SEGUNDO CAPÍTULO ◂</div>
+        <h1>El Portal LIVE</h1>
+
+        <p>Después de semanas de preparación, teorías y mitología personal, <span class="highlight">Marco Antonio Rojas Valdovinos</span> se enfrentó a la prueba definitiva: <strong>activar su sistema de cobro en el mundo real</strong>.</p>
+
+        <p>No bastaba con tener la idea, el branding, los videos, el kit digital. La Matrix (léase: la procrastinación) se había disfrazado de "preparación" durante días. Marco había creado una decena de cuentas de prueba en Stripe, había saltado entre dashboards, había llenado formularios con nombres místicos… pero <strong>el interruptor seguía en "TEST"</strong>.</p>
+
+        <div class="neon-box">
+            <h3 style="margin-top:0; color:#00ffff;">El protocolo de la ruptura</h3>
+            <p>Lo que Marco llamó <em>"Protocolo de Ruptura Terminal"</em> era, en realidad, una lista de verificación de 4 pasos que <strong>cualquier emprendedor digital</strong> debe ejecutar para dejar de jugar y empezar a facturar:</p>
+            <div style="margin-top:1rem;">
+                <div style="display:flex; gap:0.8rem; align-items:center; background:rgba(0,0,0,0.3); padding:0.5rem 1rem; border-radius:8px; margin-bottom:0.5rem; border-left:3px solid #ff66ff;">
+                    <span style="color:#ff66ff; font-weight:700;">1.</span>
+                    <span style="color:#b3a5d9;">Apagar el modo de prueba (<span style="color:#00ffff;">Test → LIVE</span>)</span>
+                </div>
+                <div style="display:flex; gap:0.8rem; align-items:center; background:rgba(0,0,0,0.3); padding:0.5rem 1rem; border-radius:8px; margin-bottom:0.5rem; border-left:3px solid #FFD700;">
+                    <span style="color:#FFD700; font-weight:700;">2.</span>
+                    <span style="color:#b3a5d9;">Conectar la cuenta bancaria real (<span style="color:#FFD700;">Banamex</span>)</span>
+                </div>
+                <div style="display:flex; gap:0.8rem; align-items:center; background:rgba(0,0,0,0.3); padding:0.5rem 1rem; border-radius:8px; margin-bottom:0.5rem; border-left:3px solid #00ffff;">
+                    <span style="color:#00ffff; font-weight:700;">3.</span>
+                    <span style="color:#b3a5d9;">Crear el producto con precio real (<span style="color:#00ffff;">$297 USD</span>)</span>
+                </div>
+                <div style="display:flex; gap:0.8rem; align-items:center; background:rgba(0,0,0,0.3); padding:0.5rem 1rem; border-radius:8px; border-left:3px solid #ff66ff;">
+                    <span style="color:#ff66ff; font-weight:700;">4.</span>
+                    <span style="color:#b3a5d9;">Generar el enlace de pago y <span style="color:#ff66ff;">compartirlo</span></span>
+                </div>
+            </div>
+        </div>
+
+        <h2>El momento de la verdad</h2>
+
+        <p>Marco abrió su dashboard de Stripe, con el corazón latiendo a 140 BPM. El cursor flotaba sobre el interruptor <strong>"Modo de prueba"</strong>. Un click lo separaba de la realidad: <em>¿Y si nadie compraba? ¿Y si el sistema no funcionaba? ¿Y si todo era un fracaso?</em></p>
+
+        <p>Pero recordó su propia enseñanza: <strong>"El miedo a vender es más caro que el rechazo."</strong> Y entonces, con la firmeza de quien ha decidido dejar de teorizar, <span class="highlight">hizo clic en "OFF"</span>.</p>
+
+        <div style="background:rgba(0,255,255,0.05); border:2px solid #00ffff; border-radius:16px; padding:1.5rem; text-align:center; margin:1.5rem 0;">
+            <p style="font-size:1.3rem; color:#00ffff; text-shadow:0 0 20px rgba(0,255,255,0.3);">⚡ TEST MODE: OFF ⚡</p>
+            <p style="color:#b3a5d9; margin-top:0.3rem;">El dashboard se volvió negro. La cuenta estaba viva.</p>
+        </div>
+
+        <h2>Crear el arma</h2>
+
+        <p>Con el sistema en modo real, Marco creó su primer producto de pago: <strong>"KRONOS Avatar de Carbono"</strong> a $297 USD. No era magia, era un enlace de pago que Stripe generó en menos de 2 minutos: <code style="background:#1a142b; padding:0.2rem 0.6rem; border-radius:4px;">https://buy.stripe.com/eVq28r6PaeoSfDH4N47ss02</code></p>
+
+        <p>Ese enlace era su <strong>puente entre el deseo y la realidad</strong>. Cualquier persona con una tarjeta de crédito podía acceder a su kit, y el dinero caería directamente en su cuenta Banamex cada lunes.</p>
+
+        <div class="protocolo-card">
+            <h3 style="margin-top:0; color:#ff66ff;">📋 Protocolo de Ruptura Terminal (versión real)</h3>
+            <div class="step"><span class="num">1.</span><span class="desc">Dashboard → Test mode OFF</span><span class="ok">✅</span></div>
+            <div class="step"><span class="num">2.</span><span class="desc">KYC verificado (INE + RFC ROVM9904156H6)</span><span class="ok">✅</span></div>
+            <div class="step"><span class="num">3.</span><span class="desc">Producto LIVE: KRONOS Avatar de Carbono – $297 USD</span><span class="ok">✅</span></div>
+            <div class="step"><span class="num">4.</span><span class="desc">Payment Link: https://buy.stripe.com/eVq28r6PaeoSfDH4N47ss02</span><span class="ok">✅</span></div>
+            <div style="margin-top:1rem; text-align:center; color:#00ff88; font-weight:700;">ESTADO: IMPERIO FACTURANDO</div>
+        </div>
+
+        <h2>El primer clic</h2>
+
+        <p>Marco tomó su teléfono, abrió WhatsApp y escribió un mensaje a 15 contactos que ya habían mostrado interés. No fue una "ametralladora de gnosis", fue un <strong>mensaje directo, honesto y con un enlace</strong>:</p>
+
+        <blockquote style="background:#0b0719; border-left:4px solid #FFD700; padding:1rem; margin:1.2rem 0; font-style:italic;">
+            "Luis, abrí el portal LIVE del Kit KRONOS. $297 USD. Acceso inmediato + Grupo Privado. Solo 11 lugares. Link: https://buy.stripe.com/eVq28r6PaeoSfDH4N47ss02 ¿Lo tomo por ti hoy?"
+        </blockquote>
+
+        <p><strong>El primer clic llegó a los 10 minutos.</strong> No era una venta, pero era sangre en el agua. Alguien había abierto el checkout. Estaban leyendo, decidiendo, con la tarjeta en la mano.</p>
+
+        <div style="background:rgba(255,215,0,0.05); border:2px solid #FFD700; border-radius:12px; padding:1.2rem; text-align:center; margin:1.5rem 0;">
+            <p style="font-size:1.5rem; color:#FFD700; font-weight:700;">🖱️ Primer click detectado</p>
+            <p style="color:#b3a5d9;">El portal está caliente. El tráfico entra. La decisión está en manos del cliente.</p>
+        </div>
+
+        <h2>Lecciones del Capítulo 2</h2>
+
+        <div class="lecciones">
+            <div class="leccion-item"><span class="num">01</span> El modo de prueba es tu enemigo. La acción real comienza cuando apagas el simulador.</div>
+            <div class="leccion-item"><span class="num">02</span> Conectar tu cuenta bancaria no es un acto de fe, es un acto de soberanía.</div>
+            <div class="leccion-item"><span class="num">03</span> Un enlace de pago generado en 2 minutos vale más que 2 días de teoría.</div>
+            <div class="leccion-item"><span class="num">04</span> El primer clic no es una venta, pero es la prueba de que el sistema funciona.</div>
+            <div class="leccion-item"><span class="num">05</span> La urgencia real (11 copias, deadline) convierte el interés en acción.</div>
+            <div class="leccion-item"><span class="num">06</span> Compartir el enlace con 15 personas es más efectivo que esperar a que el algoritmo te encuentre.</div>
+        </div>
+
+        <div class="cita">
+            "El 'Soberano Integral' no es un título cósmico. Es una decisión: <strong>tomar acción cuando otros solo teorizan</strong>. Y hoy, Marco tomó acción."
+            <span class="autor">— Marco Antonio Rojas Valdovinos</span>
+        </div>
+
+        <h2>¿Qué sigue en la vida real?</h2>
+
+        <p>Marco tiene ahora:</p>
+        <ul style="padding-left:1.8rem; margin-bottom:1.5rem;">
+            <li>Un <strong>sistema de cobro LIVE</strong> que acepta tarjetas de todo el mundo.</li>
+            <li>Un <strong>enlace de pago</strong> que puede compartir en cualquier lugar.</li>
+            <li>Un <strong>flujo de efectivo</strong> que empezará a llegar cada lunes.</li>
+            <li>La <strong>prueba</strong> de que la acción supera a la teoría.</li>
+        </ul>
+
+        <p>Los próximos pasos son claros: enviar más DMs, crear más contenido, recoger testimonios de los primeros compradores y escalar el sistema. <strong>El imperio ya no es un sueño, es una factura en proceso.</strong></p>
+
+        <!-- PRODUCTO CARD -->
+        <div class="producto-card">
+            <p style="font-family:'Orbitron',sans-serif; color:#FFD700; letter-spacing:2px;">KIT KRONOS</p>
+            <div class="precio">$297 USD</div>
+            <div class="detalle">Edición limitada · 11 copias · Acceso inmediato + Grupo Privado</div>
+            <a href="https://buy.stripe.com/eVq28r6PaeoSfDH4N47ss02" target="_blank" class="btn-neon" id="btn-comprar">Adquirir ahora</a>
+            <p style="margin-top:1rem; font-size:0.8rem; color:#5a4e7a;">* Plan $0: paga solo cuando monetices con el kit</p>
+        </div>
+
+        <div style="text-align:center; margin:2rem 0;">
+            <span style="display:inline-block; background:#1a142b; border:1px solid #ff66ff; padding:0.3rem 2rem; border-radius:30px; color:#ff66ff; font-size:0.8rem; letter-spacing:2px;">KRONOS © 2026 · Safe Creative 2607146379465</span>
+        </div>
+
+        <footer class="footer">
+            <p><span class="brand">KRONOS</span> — Capítulo 2: La historia real de cómo un creador activó su sistema de cobro y comenzó a facturar.</p>
+            <p style="margin-top:0.5rem;">Diseño neón · Licencia CC BY-NC-ND 4.0</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // ===== PARTÍCULAS NEÓN =====
+        (function() {
+            const canvas = document.getElementById('canvas-bg');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 80;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2.5 + 1;
+                    this.speedX = (Math.random() - 0.5) * 0.6;
+                    this.speedY = (Math.random() - 0.5) * 0.6;
+                    this.opacity = Math.random() * 0.6 + 0.2;
+                    this.color = ['#FFD700', '#00ffff', '#ff66ff', '#b3a5d9'][Math.floor(Math.random() * 4)];
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 12;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                ctx.globalAlpha = 0.08;
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        if (Math.sqrt(dx * dx + dy * dy) < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // Botón con enlace real (ya está en el href)
+        console.log('KRONOS · Capítulo 2 · El Portal LIVE');
+    </script>
+</body>
+</html>
