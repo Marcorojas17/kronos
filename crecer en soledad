@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proyecto Kronos · Crecer en Soledad con IA</title>
+    <meta name="description" content="Taller único para transformar tu soledad en taller usando IA como espejo. Certificación por IA. $1,500 MXN." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+    <style>
+        /* ----- RESET Y BASE ----- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0b0a0f;
+            color: #e6e4ed;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1c1a26; }
+        ::-webkit-scrollbar-thumb { background: #c9a86b; border-radius: 4px; }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.8rem 1.5rem 2.5rem;
+        }
+
+        /* ----- FONDO DE PARTÍCULAS ----- */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* ----- HEADER ----- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(201, 168, 107, 0.2);
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        .logo {
+            font-weight: 900;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #c9a86b, #a88345);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo span { font-weight: 300; font-size: 0.9rem; color: #8a7f9e; -webkit-text-fill-color: #8a7f9e; }
+        .nav a {
+            color: #b4adc4;
+            text-decoration: none;
+            margin: 0 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .nav a:hover { color: #c9a86b; }
+        .nav .btn-cta {
+            background: #c9a86b;
+            color: #0b0a0f;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 700;
+            border: none;
+            transition: 0.2s;
+        }
+        .nav .btn-cta:hover { background: #b08d4e; color: #0b0a0f; }
+
+        /* ----- HERO ----- */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            padding: 0.5rem 0 2.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+        .hero h1 .gold { color: #c9a86b; }
+        .hero p {
+            color: #b4adc4;
+            font-size: 1.05rem;
+            margin: 1rem 0 1.8rem;
+            max-width: 480px;
+        }
+        .hero .stats {
+            display: flex;
+            gap: 2rem;
+        }
+        .hero .stats div { text-align: center; }
+        .hero .stats .num { font-size: 1.8rem; font-weight: 800; color: #c9a86b; }
+        .hero .stats .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #8a7f9e; }
+
+        .hero .cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.2rem;
+        }
+        .btn-primary {
+            background: #c9a86b;
+            color: #0b0a0f;
+            border: none;
+            padding: 0.75rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.25s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary:hover { background: #b08d4e; transform: scale(1.02); }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #c9a86b;
+            color: #c9a86b;
+            padding: 0.75rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.25s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-outline:hover { background: #c9a86b20; }
+
+        .hero .badge {
+            display: inline-block;
+            background: rgba(201, 168, 107, 0.12);
+            border: 1px solid rgba(201, 168, 107, 0.2);
+            border-radius: 30px;
+            padding: 0.2rem 1rem;
+            font-size: 0.7rem;
+            color: #c9a86b;
+            letter-spacing: 0.5px;
+        }
+
+        /* ----- SECCIONES ----- */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 2.8rem 0 1rem;
+            border-left: 4px solid #c9a86b;
+            padding-left: 1.2rem;
+            position: relative;
+            z-index: 2;
+        }
+        .section-title span { font-weight: 300; color: #8a7f9e; font-size: 1rem; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 1.8rem 0; position: relative; z-index: 2; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 1.8rem 0; position: relative; z-index: 2; }
+
+        .card {
+            background: rgba(20, 18, 33, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 1.8rem;
+            backdrop-filter: blur(4px);
+            transition: 0.25s;
+        }
+        .card:hover { border-color: rgba(201, 168, 107, 0.25); transform: translateY(-4px); }
+        .card .icon { font-size: 2.2rem; margin-bottom: 0.4rem; }
+        .card h3 { font-size: 1.2rem; color: #fff; margin-bottom: 0.2rem; }
+        .card p { color: #b4adc4; font-size: 0.95rem; }
+
+        .card.pricing { border-color: rgba(201, 168, 107, 0.12); }
+        .card.pricing .price { font-size: 2rem; font-weight: 800; color: #c9a86b; margin: 0.3rem 0; }
+        .card.pricing .btn {
+            display: inline-block;
+            margin-top: 0.8rem;
+            padding: 0.5rem 1.8rem;
+            border-radius: 40px;
+            background: transparent;
+            border: 1.5px solid #c9a86b;
+            color: #c9a86b;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.25s;
+            font-size: 0.9rem;
+        }
+        .card.pricing .btn:hover { background: #c9a86b; color: #0b0a0f; }
+
+        .card.pricing .btn-gold {
+            background: #c9a86b;
+            color: #0b0a0f;
+            border: none;
+        }
+        .card.pricing .btn-gold:hover { background: #b08d4e; }
+
+        /* ----- CERTIFICACIÓN ----- */
+        .cert-badge {
+            background: rgba(201, 168, 107, 0.06);
+            border: 1px solid rgba(201, 168, 107, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+        .cert-badge .icon-big { font-size: 3rem; }
+        .cert-badge .text { flex: 1; }
+        .cert-badge .text h4 { color: #fff; font-size: 1.1rem; margin-bottom: 0.1rem; }
+        .cert-badge .text p { color: #b4adc4; font-size: 0.9rem; margin: 0; }
+
+        /* ----- FAQ ----- */
+        .faq-item {
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 1rem 0;
+            position: relative;
+            z-index: 2;
+        }
+        .faq-item .q {
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-item .q i { color: #c9a86b; transition: 0.2s; }
+        .faq-item .a { color: #b4adc4; font-size: 0.95rem; margin-top: 0.4rem; display: none; }
+        .faq-item.active .a { display: block; }
+        .faq-item.active .q i { transform: rotate(180deg); }
+
+        /* ----- CONTACTO ----- */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+            position: relative;
+            z-index: 2;
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            border: 1px solid #2a2638;
+            background: #141221;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+        .contact-form textarea { min-height: 90px; resize: vertical; }
+        .contact-form .btn-submit {
+            background: #c9a86b;
+            color: #0b0a0f;
+            border: none;
+            padding: 0.8rem 2.5rem;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+        .contact-form .btn-submit:hover { background: #b08d4e; }
+
+        /* ----- FOOTER ----- */
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #5a4e6e;
+            position: relative;
+            z-index: 2;
+        }
+        .footer .brand { color: #c9a86b; font-weight: 600; }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 850px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero p { margin-left: auto; margin-right: auto; }
+            .hero .stats { justify-content: center; }
+            .grid-2, .grid-3, .contact-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .nav a { margin: 0 0.4rem 0 0; font-size: 0.8rem; }
+            .hero h1 { font-size: 2.4rem; }
+            .cert-badge { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 500px) {
+            .container { padding: 0.8rem 0.8rem 1.5rem; }
+            .hero h1 { font-size: 2rem; }
+            .section-title { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles"></canvas>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">Proyecto Kronos <span>· Crecer en Soledad</span></div>
+            <nav class="nav">
+                <a href="#taller">Taller</a>
+                <a href="#certificacion">Certificación</a>
+                <a href="#testimonios">Testimonios</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contacto" class="btn-cta">Reservar</a>
+            </nav>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div>
+                <div style="margin-bottom:0.8rem;"><span class="badge">🔵 Método testigo 2025-2026 · Meta AI</span></div>
+                <h1>Crecer en <span class="gold">Soledad</span> con <span class="gold">IA</span></h1>
+                <p>No es coaching. Es filosofía vivida. Un taller único para convertir tu soledad en taller usando la IA como espejo de amor duro.</p>
+                <div class="stats">
+                    <div><div class="num">3</div><div class="label">Caminos: Cueva · Teatro · Taller</div></div>
+                    <div><div class="num">$1,500</div><div class="label">Inversión · Cupo 10</div></div>
+                    <div><div class="num">IA</div><div class="label">Certificación por IA</div></div>
+                </div>
+                <div class="cta-group">
+                    <a href="#contacto" class="btn-primary">Quiero mi lugar</a>
+                    <a href="#taller" class="btn-outline">Conocer más</a>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <div style="background:rgba(20,18,33,0.5); border:1px solid rgba(201,168,107,0.15); border-radius:24px; padding:1.8rem; backdrop-filter:blur(6px);">
+                    <div style="font-size:4rem; margin-bottom:0.2rem;">🪐</div>
+                    <h3 style="color:#c9a86b; font-weight:700; font-size:1.2rem;">De la Cueva al Taller</h3>
+                    <p style="color:#b4adc4; font-size:0.9rem; margin-top:0.2rem;">70 veces encadenado por Kronos.<br />Hoy enseño el camino.</p>
+                    <div style="margin-top:0.8rem; font-size:0.75rem; color:#8a7f9e;">Marco Antonio Rojas Valdovinos · Fundador</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FILOSOFÍA: LOS 3 CAMINOS -->
+        <h2 class="section-title">🧭 Los 3 caminos <span>— ¿en cuál estás hoy?</span></h2>
+        <div class="grid-3">
+            <div class="card" style="border-left:4px solid #4a3f5a;">
+                <div class="icon">🕳️</div>
+                <h3>1. Cueva</h3>
+                <p>Te encierras. El abismo te come. La soledad te pesa más que cualquier conversación.</p>
+            </div>
+            <div class="card" style="border-left:4px solid #7a6b8a;">
+                <div class="icon">🎭</div>
+                <h3>2. Teatro</h3>
+                <p>Hablas bonito del abismo, citas filosofía, pero no bajas. Puro corcho.</p>
+            </div>
+            <div class="card" style="border-left:4px solid #c9a86b;">
+                <div class="icon">🔧</div>
+                <h3>3. Taller</h3>
+                <p>Te rompes y das a luz una estrella danzante. Tu caos se vuelve estrategia.</p>
+            </div>
+        </div>
+
+        <!-- TALLER -->
+        <h2 class="section-title" id="taller">🧠 Taller único <span>— plática directa con IA</span></h2>
+        <div class="grid-2">
+            <div class="card">
+                <div class="icon">💬</div>
+                <h3>¿Qué es?</h3>
+                <p>Sesión en vivo donde <strong>tú hablas directo con la IA</strong> para actualizar las respuestas que te das cuando estás solo. Yo solo guío con mis prompts de amor duro (Método Kronos). La IA te confronta sin corcho.</p>
+                <p style="margin-top:0.8rem; color:#c9a86b; font-weight:600;">De cueva a taller. De caos a estrella danzante.</p>
+            </div>
+            <div class="card pricing" style="border-color:#c9a86b30;">
+                <h3>Inversión</h3>
+                <div class="price">$1,500 MXN</div>
+                <p style="font-size:0.9rem; color:#b4adc4;">Incluye taller en vivo + guía + grabación + <strong>certificación por IA</strong></p>
+                <ul style="list-style:none; padding:0; margin:0.8rem 0; font-size:0.9rem; color:#b4adc4;">
+                    <li>✓ Plática directa con IA</li>
+                    <li>✓ Pack de 10 prompts Kronos</li>
+                    <li>✓ Certificado testimonio generado por IA</li>
+                    <li>✓ Cupo máximo: 10 personas</li>
+                </ul>
+                <a href="#contacto" class="btn btn-gold" style="display:inline-block;">Reservar lugar</a>
+            </div>
+        </div>
+
+        <!-- CERTIFICACIÓN -->
+        <h2 class="section-title" id="certificacion">📜 Certificación por IA <span>— testigo de tu proceso</span></h2>
+        <div class="cert-badge">
+            <div class="icon-big">🤖</div>
+            <div class="text">
+                <h4>¿Qué es?</h4>
+                <p>Al finalizar, la IA genera tu certificado testimonio de lo que realmente aprendiste y transformaste. No es un papel bonito. Es el espejo de tu proceso. Firmado por tu diálogo con IA.</p>
+                <p style="margin-top:0.4rem; color:#c9a86b; font-size:0.85rem;">* No es título oficial. Es huella de un camino real.</p>
+            </div>
+        </div>
+
+        <!-- TESTIMONIOS -->
+        <h2 class="section-title" id="testimonios">🗣️ Lo que dicen <span>— primeras huellas</span></h2>
+        <div class="grid-2">
+            <div class="card" style="border-left:4px solid #c9a86b;">
+                <p style="font-style:italic; color:#d4cee0;">"Dejé de pedirle resúmenes a la IA y empecé a pedirle verdad. Este taller me mostró que mi soledad no era cueva, era taller esperando ser usado."</p>
+                <div style="margin-top:0.6rem; font-weight:600; color:#fff;">— Ana M., Founder</div>
+                <div style="font-size:0.8rem; color:#8a7f9e;">Certificación por IA · Julio 2026</div>
+            </div>
+            <div class="card" style="border-left:4px solid #c9a86b;">
+                <p style="font-style:italic; color:#d4cee0;">"Siempre usaba IA para trabajar. Nunca para mirarme. Kronos me enseñó a usar IA como espejo, no como herramienta. Ahora tomo decisiones sin autoengaño."</p>
+                <div style="margin-top:0.6rem; font-weight:600; color:#fff;">— Carlos R., Consultor</div>
+                <div style="font-size:0.8rem; color:#8a7f9e;">Certificación por IA · Julio 2026</div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <h2 class="section-title" id="faq">❓ Preguntas frecuentes</h2>
+        <div class="faq-item active">
+            <div class="q" onclick="toggleFaq(this)"><span>¿Necesito saber de IA para entrar?</span> <i>▾</i></div>
+            <div class="a">No. Solo necesitas saber usar WhatsApp o cualquier chat de IA. El taller es para personas, no para técnicos.</div>
+        </div>
+        <div class="faq-item">
+            <div class="q" onclick="toggleFaq(this)"><span>¿Cómo es la certificación por IA?</span> <i>▾</i></div>
+            <div class="a">Al final de la sesión, la IA genera un certificado testimonio personalizado con lo que aprendiste. No es un papel genérico, es tu huella.</div>
+        </div>
+        <div class="faq-item">
+            <div class="q" onclick="toggleFaq(this)"><span>¿Cuánto dura el taller?</span> <i>▾</i></div>
+            <div class="a">2 horas en vivo por videollamada. Queda grabado para que lo revises cuando quieras.</div>
+        </div>
+        <div class="faq-item">
+            <div class="q" onclick="toggleFaq(this)"><span>¿Qué incluye exactamente?</span> <i>▾</i></div>
+            <div class="a">Sesión en vivo + guía de prompts Kronos + grabación + certificación por IA. Todo por $1,500 MXN. Cupo limitado a 10 personas para que sea profundo.</div>
+        </div>
+
+        <!-- CONTACTO / RESERVA -->
+        <h2 class="section-title" id="contacto">📩 Reserva tu lugar</h2>
+        <div class="contact-grid">
+            <div>
+                <p style="color:#b4adc4;">Cupo de 10 personas. El taller es en vivo, con plática directa con IA. Al reservar, te escribo por WhatsApp con los detalles y el método de pago.</p>
+                <div style="margin-top:1.2rem; display:flex; gap:1rem; flex-wrap:wrap;">
+                    <a href="https://wa.me/5217225862335?text=Quiero%20mi%20lugar%20en%20el%20taller%20Kronos" target="_blank" class="btn-primary">💬 WhatsApp directo</a>
+                    <a href="mailto:marco@kronosproyecto.com" class="btn-outline">✉️ Correo</a>
+                </div>
+                <p style="margin-top:1rem; font-size:0.8rem; color:#5a4e6e;">Proyecto Kronos · Marco Antonio Rojas Valdovinos · Lerma, EdoMex</p>
+            </div>
+            <form class="contact-form" id="contactForm" onsubmit="enviarFormulario(event)">
+                <input type="text" placeholder="Nombre completo" required>
+                <input type="email" placeholder="Correo electrónico" required>
+                <input type="tel" placeholder="WhatsApp (con lada)" required>
+                <textarea placeholder="¿Qué camino sientes que estás hoy? (Cueva / Teatro / Taller)"></textarea>
+                <button type="submit" class="btn-submit">Reservar mi lugar</button>
+                <div id="formMensaje" style="color:#c9a86b; font-size:0.9rem; margin-top:0.3rem;"></div>
+            </form>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <span><span class="brand">Proyecto Kronos</span> © 2026 · Marco Antonio Rojas Valdovinos</span>
+            <span>Testigo: Diálogo filosófico con Meta AI · Julio 2026</span>
+        </footer>
+
+    </div>
+
+    <script>
+        // ===== PARTÍCULAS =====
+        (function() {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 50;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.speedY = (Math.random() - 0.5) * 0.3;
+                    this.opacity = Math.random() * 0.35 + 0.05;
+                    this.color = '#c9a86b';
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 4;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                ctx.globalAlpha = 0.03;
+                ctx.strokeStyle = '#c9a86b';
+                ctx.lineWidth = 0.3;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // ===== FAQ TOGGLE =====
+        function toggleFaq(el) {
+            const parent = el.closest('.faq-item');
+            parent.classList.toggle('active');
+        }
+
+        // ===== FORMULARIO =====
+        function enviarFormulario(e) {
+            e.preventDefault();
+            const msg = document.getElementById('formMensaje');
+            msg.textContent = '✅ ¡Listo! Te contacto por WhatsApp para confirmar tu lugar y darte los detalles de pago.';
+            document.getElementById('contactForm').reset();
+            setTimeout(() => msg.textContent = '', 6000);
+            // Opcional: abrir WhatsApp directo con mensaje predefinido
+            // window.open('https://wa.me/5217225862335?text=Quiero%20mi%20lugar%20en%20el%20taller%20Kronos', '_blank');
+        }
+    </script>
+</body>
+</html>
