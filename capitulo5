@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRONOS · Registros Reales · Marco Valdovinos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a080f;
+            color: #e8e4f0;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a142b; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.8rem 3rem;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 2.4rem;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #D4AF37, #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .badge {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #D4AF37;
+            border-radius: 30px;
+            padding: 0.3rem 1.5rem;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: #D4AF37;
+            text-transform: uppercase;
+        }
+        .badge span {
+            color: #00ccff;
+        }
+
+        /* HERO */
+        .hero {
+            padding: 2rem 0 3rem;
+            text-align: center;
+        }
+        .hero .tagline {
+            color: #00ccff;
+            font-weight: 700;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+            background: rgba(0, 204, 255, 0.08);
+            display: inline-block;
+            padding: 0.2rem 1.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 204, 255, 0.2);
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 900;
+            line-height: 1.1;
+            color: #ffffff;
+            margin-bottom: 1.2rem;
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #D4AF37, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #b3a5d9;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        .hero .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .hero .stats .item {
+            text-align: center;
+        }
+        .hero .stats .num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: #D4AF37;
+            font-weight: 700;
+        }
+        .hero .stats .label {
+            font-size: 0.8rem;
+            color: #5a4e7a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* SECCIÓN: LO QUE VENDO */
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            margin: 3rem 0 1.5rem;
+            border-left: 4px solid #D4AF37;
+            padding-left: 1.2rem;
+        }
+        .section-title span {
+            color: #b3a5d9;
+            font-size: 1rem;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 300;
+        }
+        .grid-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.8rem;
+            margin: 1.5rem 0 2.5rem;
+        }
+        .product-card {
+            background: rgba(20, 15, 35, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 16px;
+            padding: 1.8rem 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:hover {
+            border-color: #D4AF37;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.08);
+        }
+        .product-card .icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+        }
+        .product-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+        .product-card .price {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            color: #D4AF37;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        .product-card p {
+            font-size: 0.9rem;
+            color: #b3a5d9;
+            flex-grow: 1;
+            margin-bottom: 1.2rem;
+        }
+        .product-card .btn {
+            display: inline-block;
+            background: transparent;
+            border: 1.5px solid #D4AF37;
+            color: #D4AF37;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            letter-spacing: 1px;
+            margin-top: auto;
+        }
+        .product-card .btn:hover {
+            background: #D4AF37;
+            color: #0a080f;
+        }
+        .product-card .btn.cyan {
+            border-color: #00ccff;
+            color: #00ccff;
+        }
+        .product-card .btn.cyan:hover {
+            background: #00ccff;
+            color: #0a080f;
+        }
+
+        /* SECCIÓN: AUTORIDAD */
+        .auth-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin: 2rem 0;
+        }
+        .auth-grid .col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .auth-grid .col .check {
+            color: #00ccff;
+            font-weight: 700;
+        }
+        .auth-grid .folio {
+            background: rgba(212, 175, 55, 0.08);
+            border-left: 4px solid #D4AF37;
+            padding: 0.8rem 1.2rem;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+            color: #D4AF37;
+            margin-top: 1rem;
+        }
+
+        /* TESTIMONIOS */
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .testimonial-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 3px solid #D4AF37;
+        }
+        .testimonial-card p {
+            font-style: italic;
+            color: #d4caff;
+            font-size: 0.95rem;
+        }
+        .testimonial-card .author {
+            margin-top: 0.5rem;
+            font-weight: 700;
+            color: #D4AF37;
+            font-style: normal;
+        }
+
+        /* CTA FINAL */
+        .cta-section {
+            background: linear-gradient(145deg, #1a142b, #0a080f);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: 3rem 0 1rem;
+        }
+        .cta-section h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        .cta-section p {
+            color: #b3a5d9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .btn-group .btn-big {
+            background: #D4AF37;
+            color: #0a080f;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            padding: 0.8rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        .btn-group .btn-big:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+        }
+        .btn-group .btn-big.outline {
+            background: transparent;
+            border: 1.5px solid #D4AF37;
+            color: #D4AF37;
+        }
+        .btn-group .btn-big.outline:hover {
+            background: #D4AF37;
+            color: #0a080f;
+        }
+
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            font-size: 0.8rem;
+            color: #5a4e7a;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer .brand {
+            color: #D4AF37;
+        }
+
+        @media (max-width: 700px) {
+            .hero h1 { font-size: 2.5rem; }
+            .auth-grid, .testimonial-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .grid-products { grid-template-columns: 1fr; }
+            .cta-section h2 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">KRONOS</div>
+            <div class="badge"><span>⚡</span> SafeCreative ID: 2607146379465</div>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="tagline">🔐 INTEGRIDAD · NO HUMO · REGISTROS REALES</div>
+            <h1>No vendo frecuencias.<br><span class="highlight">Vendo registros.</span></h1>
+            <p>3 años de investigación en SafeCreative. Un sistema de 33 pasos para blindar tu obra contra la IA. <br><strong style="color:#D4AF37;">Lo que es tuyo, que se quede tuyo.</strong></p>
+            <div class="stats">
+                <div class="item"><div class="num">2</div><div class="label">Registros EU eIDAS</div></div>
+                <div class="item"><div class="num">+33</div><div class="label">Llaves / Pasos prácticos</div></div>
+                <div class="item"><div class="num">2099</div><div class="label">Validez legal</div></div>
+            </div>
+        </section>
+
+        <!-- PRODUCTOS REALES -->
+        <h2 class="section-title">🛡️ Lo que sí vendo <span>— necesidades reales</span></h2>
+        <div class="grid-products">
+
+            <div class="product-card">
+                <div class="icon">📄</div>
+                <h3>Guía SafeCreative</h3>
+                <p>Paso a paso para registrar tu obra y blindarla contra el entrenamiento de IA. Incluye formatos y ejemplos reales.</p>
+                <div class="price">$199 MXN</div>
+                <a href="#" class="btn">Comprar ahora</a>
+            </div>
+
+            <div class="product-card">
+                <div class="icon">🖼️</div>
+                <h3>Plantilla de Certificado</h3>
+                <p>Diseño profesional editable para tus clientes. Incluye guía de llenado y entrega por WhatsApp.</p>
+                <div class="price">$297 MXN</div>
+                <a href="#" class="btn cyan">Comprar ahora</a>
+            </div>
+
+            <div class="product-card">
+                <div class="icon">⚖️</div>
+                <h3>Auditoría Legal Startup</h3>
+                <p>Revisión de tu registro, recomendaciones de blindaje y ajuste de pitch para fondos de inversión.</p>
+                <div class="price">$1,500 MXN</div>
+                <a href="#" class="btn">Cotizar</a>
+            </div>
+
+            <div class="product-card">
+                <div class="icon">🌙</div>
+                <h3>Lectura de Carta Astral</h3>
+                <p>Tu carta natal personalizada + audio explicativo de 8 min. Para quienes buscan claridad sin rodeos.</p>
+                <div class="price">$199 MXN</div>
+                <a href="#" class="btn cyan">Comprar ahora</a>
+            </div>
+
+        </div>
+
+        <!-- AUTORIDAD / PRUEBA SOCIAL -->
+        <h2 class="section-title">🔍 Respaldo real <span>— no es magia, es ley</span></h2>
+        <div class="auth-grid">
+            <div class="col">
+                <div style="margin-bottom:1rem;">
+                    <span class="check">✅ Registro SafeCreative activo</span><br>
+                    <span class="check">✅ Sello de tiempo EU eIDAS</span><br>
+                    <span class="check">✅ Hash SHA256 de custodia</span><br>
+                    <span class="check">✅ Licencia CC BY-NC-ND 4.0</span>
+                </div>
+                <div class="folio">📜 FOLIO: 2607146379465-3VFD7N</div>
+            </div>
+            <div class="col">
+                <p style="color:#b3a5d9; font-size:0.95rem;">
+                    "Esto no es una promesa. Es un documento con validez jurídica que puedes presentar ante cualquier tribunal hasta el año 2099. 
+                    <strong style="color:#D4AF37;">No necesitas fe, necesitas firma.</strong>"
+                </p>
+                <p style="margin-top:1rem; color:#5a4e7a;">— Marco Antonio Rojas Valdovinos, Fundador KRONOS</p>
+            </div>
+        </div>
+
+        <!-- TESTIMONIOS (Placeholder realista) -->
+        <h2 class="section-title">📣 Gente que ya protege su obra</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <p>“No sabía que la IA podía entrenarse con mi contenido. Con la guía de Marco registré mi libro en 20 minutos.”</p>
+                <div class="author">— Carlos M., Escritor</div>
+            </div>
+            <div class="testimonial-card">
+                <p>“La plantilla de certificado me ahorró $1,500 de diseño. Mis clientes se sienten seguros con mi marca.”</p>
+                <div class="author">— Fernanda L., Coach</div>
+            </div>
+        </div>
+
+        <!-- CALL TO ACTION FINAL -->
+        <section class="cta-section">
+            <h2>¿Listo para blindar tu obra?</h2>
+            <p>Escríbeme directo por WhatsApp o elige tu producto. Te entrego en menos de 24h.</p>
+            <div class="btn-group">
+                <a href="#" class="btn-big">💬 WhatsApp directo</a>
+                <a href="#" class="btn-big outline">📦 Ver todos los productos</a>
+            </div>
+            <p style="margin-top:1.5rem; font-size:0.8rem; color:#5a4e7a;">* Atención personalizada por Marco. No bots, no automatizaciones frías.</p>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <span><span class="brand">KRONOS</span> © 2026 · Marco Antonio Rojas Valdovinos</span>
+            <span>📍 Toluca, MX · Registro: 2607146379465</span>
+        </footer>
+
+    </div>
+
+    <script>
+        // ===== PARTÍCULAS MINIMALISTAS CORPORATIVAS =====
+        (function() {
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 45;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2 + 1;
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.speedY = (Math.random() - 0.5) * 0.3;
+                    this.opacity = Math.random() * 0.4 + 0.15;
+                    this.color = ['#D4AF37', '#00ccff', '#b3a5d9'][Math.floor(Math.random() * 3)];
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 8;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                // Líneas suaves
+                ctx.globalAlpha = 0.03;
+                ctx.strokeStyle = '#D4AF37';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // SIMULACIÓN DE BOTONES (para demo)
+        document.querySelectorAll('.product-card .btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('🔗 Link de pago listo. Envíame un WhatsApp para completar tu compra: +52 722 586 2335');
+            });
+        });
+        document.querySelector('.btn-big.outline').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('📦 Todos los productos disponibles en mi catálogo de WhatsApp. Escríbeme para verlos.');
+        });
+        document.querySelector('.btn-big').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('💬 Escríbeme directo por WhatsApp al +52 722 586 2335 para atención personalizada.');
+        });
+    </script>
+</body>
+</html>
