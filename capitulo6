@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRONOS · Productos + Licencias Corporativas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a080f;
+            color: #e8e4f0;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a142b; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.8rem 3rem;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 2.4rem;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #D4AF37, #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .badge {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #D4AF37;
+            border-radius: 30px;
+            padding: 0.3rem 1.5rem;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: #D4AF37;
+            text-transform: uppercase;
+        }
+        .badge span { color: #00ccff; }
+
+        /* HERO */
+        .hero {
+            padding: 2rem 0 3rem;
+            text-align: center;
+        }
+        .hero .tagline {
+            color: #00ccff;
+            font-weight: 700;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+            background: rgba(0, 204, 255, 0.08);
+            display: inline-block;
+            padding: 0.2rem 1.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 204, 255, 0.2);
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            color: #ffffff;
+            margin-bottom: 1.2rem;
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #D4AF37, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #b3a5d9;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        .hero .badge-folio {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #D4AF37;
+            border-radius: 40px;
+            padding: 0.4rem 2rem;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            color: #D4AF37;
+            letter-spacing: 1px;
+        }
+
+        /* SECCIÓN: DOS CAMINOS */
+        .dual-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .dual-card {
+            background: rgba(20, 15, 35, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 2rem 1.8rem;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s;
+        }
+        .dual-card:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            transform: translateY(-3px);
+        }
+        .dual-card .icono {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .dual-card h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .dual-card .sub {
+            color: #b3a5d9;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .dual-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        .dual-card ul li {
+            padding: 0.3rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.9rem;
+            color: #c8c0e0;
+        }
+        .dual-card ul li strong {
+            color: #D4AF37;
+        }
+        .dual-card .btn {
+            display: inline-block;
+            background: transparent;
+            border: 1.5px solid #D4AF37;
+            color: #D4AF37;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            padding: 0.6rem 1.8rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+            cursor: pointer;
+        }
+        .dual-card .btn:hover {
+            background: #D4AF37;
+            color: #0a080f;
+        }
+        .dual-card .btn.cyan {
+            border-color: #00ccff;
+            color: #00ccff;
+        }
+        .dual-card .btn.cyan:hover {
+            background: #00ccff;
+            color: #0a080f;
+        }
+        .dual-card .precio {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            color: #D4AF37;
+            margin: 0.5rem 0;
+        }
+
+        .dual-card.corporate {
+            border-color: rgba(0, 204, 255, 0.15);
+        }
+        .dual-card.corporate h2 {
+            color: #00ccff;
+        }
+        .dual-card.corporate .btn {
+            border-color: #00ccff;
+            color: #00ccff;
+        }
+        .dual-card.corporate .btn:hover {
+            background: #00ccff;
+            color: #0a080f;
+        }
+
+        /* PRODUCTOS DIRECTOS (mini grid dentro de la tarjeta) */
+        .mini-products {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        .mini-prod {
+            background: rgba(0,0,0,0.3);
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            border-left: 3px solid #D4AF37;
+            font-size: 0.85rem;
+        }
+        .mini-prod .p {
+            color: #D4AF37;
+            font-weight: 700;
+        }
+
+        /* SECCIÓN: LICENCIAS DETALLE */
+        .license-detail {
+            background: rgba(0, 204, 255, 0.03);
+            border: 1px solid rgba(0, 204, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2.5rem 0;
+        }
+        .license-detail h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00ccff;
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+        }
+        .license-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .license-item {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 3px solid #00ccff;
+        }
+        .license-item .num {
+            color: #00ccff;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .license-item .label {
+            color: #b3a5d9;
+            font-size: 0.9rem;
+        }
+        .license-item .valor {
+            color: #D4AF37;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* PROSPECCIÓN */
+        .prospect-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .prospect-item {
+            background: rgba(0,0,0,0.3);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #D4AF37;
+            font-size: 0.9rem;
+        }
+        .prospect-item .empresa {
+            font-weight: 700;
+            color: #fff;
+        }
+        .prospect-item .contacto {
+            color: #b3a5d9;
+            font-size: 0.8rem;
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            font-size: 0.8rem;
+            color: #5a4e7a;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer .brand { color: #D4AF37; }
+
+        @media (max-width: 700px) {
+            .dual-section { grid-template-columns: 1fr; }
+            .license-grid { grid-template-columns: 1fr; }
+            .prospect-list { grid-template-columns: 1fr; }
+            .mini-products { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.2rem; }
+            .header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">KRONOS</div>
+            <div class="badge"><span>⚡</span> SafeCreative: 2607146379465</div>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="tagline">🔐 PROTOCOLO DE LEGADO DIGITAL · DESDE TOLUCA PARA EL MUNDO</div>
+            <h1>Dos caminos para <span class="highlight">proteger tu obra</span></h1>
+            <p>KRONOS es tanto un producto directo como una infraestructura licenciable. Elige el camino que necesitas hoy.</p>
+            <div class="badge-folio">📜 FE DE HECHOS · REGISTRO EU eIDAS · VÁLIDO HASTA 2099</div>
+        </section>
+
+        <!-- DOS CAMINOS -->
+        <div class="dual-section">
+            <!-- COLUMNA 1: PRODUCTOS DIRECTOS -->
+            <div class="dual-card">
+                <div class="icono">🛒</div>
+                <h2>Productos directos</h2>
+                <div class="sub">Para creadores, autónomos y personas que buscan proteger su obra sin intermediarios.</div>
+                <div class="mini-products">
+                    <div class="mini-prod">📄 Guía SafeCreative <span class="p">$199</span></div>
+                    <div class="mini-prod">🖼️ Plantilla de Certificado <span class="p">$297</span></div>
+                    <div class="mini-prod">🌙 Lectura de Carta Astral <span class="p">$199</span></div>
+                    <div class="mini-prod">⚖️ Auditoría Legal <span class="p">$1,500</span></div>
+                </div>
+                <ul>
+                    <li>✅ Entrega inmediata por WhatsApp</li>
+                    <li>✅ Atención personalizada por Marco</li>
+                    <li>✅ Sin contratos ni anualidades</li>
+                </ul>
+                <a href="#" class="btn" id="btn-productos">Ver todos los productos</a>
+            </div>
+
+            <!-- COLUMNA 2: LICENCIAS CORPORATIVAS -->
+            <div class="dual-card corporate">
+                <div class="icono">🏛️</div>
+                <h2>Licencias corporativas</h2>
+                <div class="sub">Para notarías, legaltechs, family offices y empresas que quieren integrar KRONOS como motor propio.</div>
+                <div style="margin:1rem 0;">
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:0.3rem 0;">
+                        <span>Setup Fee</span>
+                        <span style="color:#D4AF37; font-weight:700;">$150,000 MXN</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:0.3rem 0;">
+                        <span>Anualidad</span>
+                        <span style="color:#D4AF37; font-weight:700;">$180,000 MXN / año</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; padding:0.3rem 0;">
+                        <span>Contrato mínimo</span>
+                        <span style="color:#00ccff; font-weight:700;">2 años</span>
+                    </div>
+                </div>
+                <ul>
+                    <li>✅ Incluye NDA blindado + contrato de licencia</li>
+                    <li>✅ Exclusividad sectorial (solo 3 en México)</li>
+                    <li>✅ Cláusula anti-IA + penalización por incumplimiento</li>
+                </ul>
+                <a href="#" class="btn cyan" id="btn-licencias">Solicitar información</a>
+            </div>
+        </div>
+
+        <!-- DETALLE LICENCIAS -->
+        <div class="license-detail">
+            <h3>📋 Modelo de Licencia Tier 1 — Infraestructura para empresas</h3>
+            <p style="color:#b3a5d9;">KRONOS no se vende, se licencia. Ustedes integran el protocolo en sus servicios, yo mantengo la propiedad intelectual y cobro anualidad.</p>
+            <div class="license-grid">
+                <div class="license-item">
+                    <div class="num">1.</div>
+                    <div class="label">Implementación</div>
+                    <div class="valor">$150,000 MXN</div>
+                    <div style="font-size:0.8rem; color:#888;">Setup fee · configuración en sus servidores</div>
+                </div>
+                <div class="license-item">
+                    <div class="num">2.</div>
+                    <div class="label">Anualidad</div>
+                    <div class="valor">$180,000 MXN</div>
+                    <div style="font-size:0.8rem; color:#888;">Por uso de marca KRONOS y sello eIDAS</div>
+                </div>
+                <div class="license-item">
+                    <div class="num">3.</div>
+                    <div class="label">Exclusividad</div>
+                    <div class="valor">3 licencias</div>
+                    <div style="font-size:0.8rem; color:#888;">Máximo en México por sector</div>
+                </div>
+            </div>
+            <div style="background:rgba(212,175,55,0.05); padding:1rem; border-radius:12px; border-left:4px solid #D4AF37;">
+                <p style="margin:0; font-size:0.95rem; color:#d4caff;">
+                    <strong style="color:#D4AF37;">Incluye:</strong> NDA de alta seguridad · Contrato de licencia · Cláusula anti-IA · Penalización $1M MXN · Auditoría anual · Fe de hechos notarial.
+                </p>
+            </div>
+        </div>
+
+        <!-- PROSPECCIÓN / LISTA DE TIRO -->
+        <h2 style="font-family:'Orbitron',sans-serif; color:#D4AF37; font-size:1.6rem; margin-top:2rem;">🎯 Prospectos Tier 1 — Lista de tiro</h2>
+        <p style="color:#b3a5d9; margin-bottom:1rem;">Empresas que ya tienen presupuesto y necesitan KRONOS como motor de herencia digital.</p>
+        <div class="prospect-list">
+            <div class="prospect-item">
+                <div class="empresa">Notaría 185 CDMX</div>
+                <div class="contacto">Titular / Director de Innovación</div>
+                <div style="font-size:0.8rem; color:#888;">Ángulo: Art. 1392 bis · Herencia digital</div>
+            </div>
+            <div class="prospect-item">
+                <div class="empresa">Autenticador Letman</div>
+                <div class="contacto">Director de Producto / CTO</div>
+                <div style="font-size:0.8rem; color:#888;">Ángulo: Testamento digital premium</div>
+            </div>
+            <div class="prospect-item">
+                <div class="empresa">Lemontech México</div>
+                <div class="contacto">Country Manager</div>
+                <div style="font-size:0.8rem; color:#888;">Ángulo: Módulo de custodia anti-IA</div>
+            </div>
+            <div class="prospect-item">
+                <div class="empresa">SMPS Legal</div>
+                <div class="contacto">Socio Director PI</div>
+                <div style="font-size:0.8rem; color:#888;">Ángulo: Secreto industrial blindado</div>
+            </div>
+            <div class="prospect-item">
+                <div class="empresa">Wisdom Family Office</div>
+                <div class="contacto">Director de Planificación</div>
+                <div style="font-size:0.8rem; color:#888;">Ángulo: Bóvedas privadas UHNWI</div>
+            </div>
+            <div class="prospect-item">
+                <div class="empresa">Pérez Burillo Family Office</div>
+                <div class="contacto">Gestor Patrimonial</div>
+                <div style="font-size:0.8rem; color:#888;">Ángulo: Legado del fundador hasta 2099</div>
+            </div>
+        </div>
+
+        <!-- CTA FINAL -->
+        <div style="background:linear-gradient(145deg, #1a142b, #0a080f); border:1px solid rgba(212,175,55,0.2); border-radius:24px; padding:2.5rem 2rem; text-align:center; margin:3rem 0;">
+            <h2 style="font-family:'Orbitron',sans-serif; font-size:2rem; color:#fff;">¿Listo para blindar tu obra o tu empresa?</h2>
+            <p style="color:#b3a5d9; max-width:600px; margin:0 auto 1.5rem;">Elige el camino que necesitas hoy. Atención directa con Marco, sin intermediarios.</p>
+            <div style="display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;">
+                <a href="#" class="btn" id="btn-cta-productos" style="background:#D4AF37; color:#0a080f; padding:0.8rem 2.5rem; border:none; font-family:'Orbitron',sans-serif; font-weight:700; border-radius:50px; text-decoration:none;">🛒 Productos directos</a>
+                <a href="#" class="btn" id="btn-cta-licencias" style="background:transparent; border:1.5px solid #00ccff; color:#00ccff; padding:0.8rem 2.5rem; font-family:'Orbitron',sans-serif; font-weight:700; border-radius:50px; text-decoration:none;">🏛️ Licencias corporativas</a>
+            </div>
+            <p style="margin-top:1.5rem; font-size:0.8rem; color:#5a4e7a;">* Todos los productos y licencias están respaldados por SafeCreative 2607146379465 y Fe de Hechos Notarial</p>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <span><span class="brand">KRONOS</span> © 2026 · Marco Antonio Rojas Valdovinos</span>
+            <span>📍 Toluca, MX · Registro: 2607146379465 · Fe de Hechos Notarial</span>
+        </footer>
+
+    </div>
+
+    <script>
+        // === PARTÍCULAS ===
+        (function() {
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 50;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2 + 1;
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.speedY = (Math.random() - 0.5) * 0.3;
+                    this.opacity = Math.random() * 0.4 + 0.15;
+                    this.color = ['#D4AF37', '#00ccff', '#b3a5d9'][Math.floor(Math.random() * 3)];
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 6;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                ctx.globalAlpha = 0.03;
+                ctx.strokeStyle = '#D4AF37';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // === BOTONES ===
+        document.querySelectorAll('#btn-productos, #btn-cta-productos').forEach(b => {
+            b.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('🛒 Productos directos: Guía SafeCreative $199 · Plantilla $297 · Lectura Astral $199 · Auditoría $1,500. Escríbeme por WhatsApp al 722 586 2335 para comprar.');
+            });
+        });
+        document.querySelectorAll('#btn-licencias, #btn-cta-licencias').forEach(b => {
+            b.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('🏛️ Licencias corporativas: Setup $150k + Anualidad $180k. Incluye NDA blindado, contrato de licencia, cláusula anti-IA y exclusividad sectorial. Escríbeme por WhatsApp al 722 586 2335 para agendar demo bajo NDA.');
+            });
+        });
+    </script>
+</body>
+</html>
