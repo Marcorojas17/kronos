@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRONOS · Capítulo 1</title>
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET Y BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0b0719;
+            color: #e0e0ff;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a142b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 4px;
+        }
+
+        /* ===== FONDO DE PARTÍCULAS ===== */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            padding: 2rem 0 1.5rem;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            margin-bottom: 3rem;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 3.5rem;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, #FFD700, #FF8C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+        .subhead {
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            color: #b3a5d9;
+            margin-top: 0.2rem;
+            text-transform: uppercase;
+        }
+        .subhead span {
+            color: #00ffff;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+        }
+
+        /* ===== TÍTULOS ===== */
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+        h1 {
+            font-size: 2.8rem;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #00ffff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            margin: 2.5rem 0 1rem;
+            border-left: 4px solid #FFD700;
+            padding-left: 1rem;
+        }
+        h3 {
+            color: #ff66ff;
+            text-shadow: 0 0 10px rgba(255, 102, 255, 0.3);
+            margin: 1.8rem 0 0.5rem;
+        }
+
+        /* ===== TEXTO Y CARD ===== */
+        .capitulo-marker {
+            font-size: 0.8rem;
+            color: #ff66ff;
+            letter-spacing: 2px;
+            background: rgba(255, 102, 255, 0.1);
+            display: inline-block;
+            padding: 0.2rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid #ff66ff;
+            margin-bottom: 1.2rem;
+        }
+        p {
+            margin-bottom: 1.2rem;
+            font-weight: 300;
+        }
+        .highlight {
+            color: #FFD700;
+            font-weight: 700;
+        }
+        .neon-box {
+            background: rgba(45, 27, 105, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 1.8rem 2rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
+        }
+        .neon-box strong {
+            color: #00ffff;
+        }
+
+        /* ===== LISTA DE LECCIONES ===== */
+        .lecciones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+        .leccion-item {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 3px solid #FFD700;
+            padding: 0.8rem 1.2rem;
+            border-radius: 0 8px 8px 0;
+            transition: 0.2s;
+        }
+        .leccion-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateX(5px);
+        }
+        .leccion-item .num {
+            color: #ff66ff;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        /* ===== PRODUCTO ===== */
+        .producto-card {
+            background: linear-gradient(145deg, #1a142b, #0b0719);
+            border: 2px solid #FFD700;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2.5rem 0;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.15);
+        }
+        .producto-card .precio {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: #FFD700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+        .producto-card .detalle {
+            color: #b3a5d9;
+            margin: 0.5rem 0 1.5rem;
+        }
+        .btn-neon {
+            display: inline-block;
+            background: transparent;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 0.8rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        .btn-neon:hover {
+            background: #00ffff;
+            color: #0b0719;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.6);
+            transform: scale(1.04);
+        }
+
+        /* ===== CITAS ===== */
+        .cita {
+            font-style: italic;
+            font-size: 1.1rem;
+            border-left: 4px solid #ff66ff;
+            padding-left: 1.5rem;
+            margin: 1.8rem 0;
+            color: #d4caff;
+        }
+        .cita .autor {
+            display: block;
+            margin-top: 0.3rem;
+            font-style: normal;
+            color: #FFD700;
+            font-weight: 700;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 215, 0, 0.15);
+            text-align: center;
+            font-size: 0.8rem;
+            color: #5a4e7a;
+        }
+        .footer .brand {
+            color: #FFD700;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 700px) {
+            .logo {
+                font-size: 2.2rem;
+                letter-spacing: 3px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.6rem;
+            }
+            .lecciones {
+                grid-template-columns: 1fr;
+            }
+            .producto-card .precio {
+                font-size: 2.4rem;
+            }
+            .btn-neon {
+                font-size: 1rem;
+                padding: 0.6rem 2rem;
+            }
+            .neon-box {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fondo de partículas -->
+    <canvas id="canvas-bg"></canvas>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">KRONOS</div>
+            <div class="subhead">Capítulo 1 · <span>El creador encerrado en su propia mitología</span></div>
+        </header>
+
+        <!-- CAPÍTULO -->
+        <div class="capitulo-marker">▸ PRIMER CAPÍTULO ◂</div>
+        <h1>El creador encerrado<br>en su propia mitología</h1>
+
+        <p><span class="highlight">Marco Antonio Rojas Valdovinos</span> tiene 27 años. Nació en Toluca, Estado de México, el 15 de abril de 1999. No es un <em>"Emisor Soberano del Pléroma"</em>. Es un <strong>creador de contenido</strong> con hambre de trascender, un editor de video autodidacta que descubrió que el algoritmo de CapCut podía ser dominado si entendías sus reglas.</p>
+
+        <p>Marco pasó meses viendo cómo otros creadores vendían plantillas y cursos por $200, $300 dólares. Él tenía el talento, tenía la visión estética —esa mezcla de cyberpunk, neón violeta y oro que tanto le gusta—, pero <strong>le faltaba el eslabón comercial</strong>.</p>
+
+        <p>Un día, abrió WhatsApp Business y empezó a conversar con la IA de Meta. No para hacerle preguntas filosóficas, sino para usarla como <strong>su asistente ejecutivo gratuito</strong>.</p>
+
+        <!-- Neón box: el "Arquitecto" no es mágico -->
+        <div class="neon-box">
+            <h3 style="margin-top:0; color:#00ffff;">El "Arquitecto" no es mágico, es un workflow</h3>
+            <p>Lo que Marco llama <strong>"Arquitecto Digital"</strong> no es un ser interdimensional. Es <strong>la combinación de herramientas que usó</strong>:</p>
+            <ul style="list-style:none; padding-left:0; display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-top:1rem;">
+                <li style="background:rgba(0,255,255,0.05); padding:0.5rem 0.8rem; border-radius:8px; border-left:3px solid #00ffff;"><strong>Núcleo Plerómico</strong> → Meta AI (WhatsApp)</li>
+                <li style="background:rgba(255,215,0,0.05); padding:0.5rem 0.8rem; border-radius:8px; border-left:3px solid #FFD700;"><strong>Motor VITA-CODE</strong> → CapCut + Python</li>
+                <li style="background:rgba(255,102,255,0.05); padding:0.5rem 0.8rem; border-radius:8px; border-left:3px solid #ff66ff;"><strong>Bypass V2</strong> → Prompt Engineering</li>
+                <li style="background:rgba(0,255,255,0.05); padding:0.5rem 0.8rem; border-radius:8px; border-left:3px solid #00ffff;"><strong>Suministro Radial</strong> → Canva + Google Drive</li>
+            </ul>
+            <p style="margin-top:1.2rem; font-size:0.95rem;">Marco no es un <em>"programador de la realidad"</em>. Es un <strong>freelancer inteligente</strong> que aprendió a orquestar herramientas gratuitas para crear un producto con valor real.</p>
+        </div>
+
+        <h2>El producto real <span style="font-size:1.2rem; color:#b3a5d9;">(sin el disfraz)</span></h2>
+
+        <p>El <strong>Kit Kronos</strong> no es un <em>"manual para despertar cristales"</em>. Es un <strong>paquete de recursos para editores de video</strong> que incluye:</p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0;">
+            <div style="background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px; border:1px solid rgba(255,215,0,0.2);">
+                <div style="color:#FFD700; font-weight:700; font-size:1.3rem;">📄 1</div>
+                <p><strong>PDF de 5 páginas</strong> con 15 prompts exactos para que CapCut genere efectos cinematográficos sin bloquearlos.</p>
+            </div>
+            <div style="background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px; border:1px solid rgba(0,255,255,0.2);">
+                <div style="color:#00ffff; font-weight:700; font-size:1.3rem;">🎞️ 2</div>
+                <p><strong>3 plantillas editables</strong> de CapCut con transiciones, keyframes y efectos de velocidad preconfigurados.</p>
+            </div>
+            <div style="background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px; border:1px solid rgba(255,102,255,0.2);">
+                <div style="color:#ff66ff; font-weight:700; font-size:1.3rem;">🎵 3</div>
+                <p><strong>Audio masterizado (Pista 9)</strong> de 5:53 minutos, sincronizado a 140 BPM, listo para videos virales.</p>
+            </div>
+            <div style="background:rgba(0,0,0,0.3); padding:1rem; border-radius:12px; border:1px solid rgba(255,215,0,0.2);">
+                <div style="color:#FFD700; font-weight:700; font-size:1.3rem;">🔒 4</div>
+                <p><strong>Licencia de uso (CC BY-NC-ND)</strong> para proteger tu estilo y saber qué puedes hacer con el material.</p>
+            </div>
+        </div>
+
+        <div class="cita">
+            "El Kit Kronos no vende humo, vende herramientas. No es un despertar espiritual, es un despertar financiero."
+            <span class="autor">— Marco Antonio Rojas Valdovinos</span>
+        </div>
+
+        <h2>La lucha real <span style="font-size:1.2rem; color:#b3a5d9;">(no contra la Matrix, contra el miedo)</span></h2>
+
+        <p>Marco pasó 3 días enteros en <em>"latencia cero"</em>… que en realidad era <strong>procrastinación con nombre bonito</strong>. No estaba <em>"sosteniendo la malla"</em>. Estaba viendo cómo su cuenta de Stripe seguía en <strong>modo TEST</strong> porque le daba miedo activar el modo LIVE y enfrentarse a que nadie comprara.</p>
+
+        <p>Los <strong>15 DMs</strong> no eran <em>"ametralladora de gnosis"</em>. Eran mensajes directos en Instagram que Marco no quería enviar porque le daba vergüenza vender.</p>
+
+        <p>El <strong>"Bypass V2"</strong> no era un hack cuántico. Era simplemente <strong>cambiar el interruptor de Test a Live en Stripe</strong>.</p>
+
+        <h2>El momento de la verdad</h2>
+
+        <p>A las 23:00 horas del 16 de julio de 2026, Marco tomó la decisión que todo creador debe tomar:</p>
+
+        <div style="background:rgba(255,215,0,0.08); padding:1.5rem; border-radius:16px; border:2px solid #FFD700; margin:1.5rem 0;">
+            <p style="font-size:1.3rem; font-weight:700; text-align:center; color:#FFD700;">Dejó de hablar de "fijeza psíquica" y empezó a hablar con clientes reales.</p>
+        </div>
+
+        <p>Esto hizo:</p>
+        <ol style="padding-left:1.8rem; margin-bottom:1.5rem;">
+            <li><strong>Activó Stripe en LIVE</strong> (no es magia, son 3 clics en un dashboard).</li>
+            <li><strong>Copió el link de pago</strong> <code style="background:#1a142b; padding:0.1rem 0.6rem; border-radius:4px;">https://buy.stripe.com/...</code> (lo generó en 2 minutos).</li>
+            <li><strong>Pegó el link en su biografía de Instagram</strong>.</li>
+            <li><strong>Envió 5 mensajes directos</strong> a creadores que ya habían comentado sus videos:
+                <blockquote style="background:#0b0719; padding:1rem; border-left:4px solid #00ffff; margin:0.8rem 0; font-style:italic;">
+                    "Oye, armé un kit con las plantillas que uso para editar. Si te interesa, está en mi bio. Son 11 copias, las cierro hoy."
+                </blockquote>
+            </li>
+        </ol>
+
+        <h2>El resultado real</h2>
+
+        <p><strong>A las 23:45</strong>, Marco recibió la notificación de Stripe en su celular:</p>
+
+        <div style="background:#1a142b; border:2px solid #00ff88; border-radius:12px; padding:1rem; text-align:center; font-size:1.5rem; color:#00ff88; text-shadow:0 0 20px rgba(0,255,136,0.3); margin:1.5rem 0;">
+            🎉 ¡Has recibido un pago de $297 USD!
+        </div>
+
+        <p>No fue una <em>"precipitación radial"</em>. Fue un creador de contenido de Guadalajara que necesitaba plantillas para su próximo video y confió en el estilo de Marco.</p>
+
+        <p><strong>A las 00:10</strong>, cayó la segunda venta.<br>
+        <strong>A la mañana siguiente</strong>, 4 copias más.</p>
+
+        <h2>La lección sin disfraces</h2>
+
+        <div class="neon-box" style="border-color:#FFD700;">
+            <p style="font-size:1.2rem; font-weight:700; color:#FFD700; text-align:center; margin-bottom:0.5rem;">Marco ganó $3,267 USD en 24 horas</p>
+            <p style="text-align:center; color:#b3a5d9; margin-bottom:1.5rem;">($297 × 11 = $3,267)</p>
+            <p>Esto no fue obra de <em>"cristales de magnetita"</em> ni de <em>"cortafuegos plerómicos"</em>.</p>
+            <p><strong>Fue obra de:</strong></p>
+            <ul style="list-style:none; padding-left:0; display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin-top:0.5rem;">
+                <li style="background:#2D1B69; padding:0.3rem 1.2rem; border-radius:20px; border:1px solid #FFD700;">🎯 Posicionamiento</li>
+                <li style="background:#2D1B69; padding:0.3rem 1.2rem; border-radius:20px; border:1px solid #00ffff;">⚙️ Tecnología</li>
+                <li style="background:#2D1B69; padding:0.3rem 1.2rem; border-radius:20px; border:1px solid #ff66ff;">⏳ Urgencia</li>
+                <li style="background:#2D1B69; padding:0.3rem 1.2rem; border-radius:20px; border:1px solid #FFD700;">💎 Valor real</li>
+            </ul>
+        </div>
+
+        <h2>Lecciones aprendidas</h2>
+        <div class="lecciones">
+            <div class="leccion-item"><span class="num">01</span> La mitología atrae, pero la utilidad convierte.</div>
+            <div class="leccion-item"><span class="num">02</span> La IA es una herramienta, no un gurú.</div>
+            <div class="leccion-item"><span class="num">03</span> La procrastinación se disfraza de "preparación".</div>
+            <div class="leccion-item"><span class="num">04</span> El miedo a vender es más caro que el rechazo.</div>
+            <div class="leccion-item"><span class="num">05</span> La escasez real (11 copias) genera urgencia real.</div>
+            <div class="leccion-item"><span class="num">06</span> Tu historia personal es tu mejor activo de marca.</div>
+        </div>
+
+        <h2>¿Qué sigue en la vida real?</h2>
+        <p>Ahora Marco tiene:</p>
+        <ul style="padding-left:1.8rem; margin-bottom:1.5rem;">
+            <li><strong>$3,267 USD</strong> en su cuenta Banamex.</li>
+            <li><strong>11 clientes</strong> que le dieron testimonios.</li>
+            <li><strong>Un embudo probado</strong> que puede replicar.</li>
+            <li><strong>Un sistema</strong> que puede escalar.</li>
+        </ul>
+        <p>Ya no necesita disfrazar su negocio de mitología. El nombre <strong>KRONOS</strong> se convierte en su <strong>marca registrada</strong>, no en su religión.</p>
+
+        <!-- PRODUCTO CARD -->
+        <div class="producto-card">
+            <p style="font-family:'Orbitron',sans-serif; color:#FFD700; letter-spacing:2px;">KIT KRONOS</p>
+            <div class="precio">$297 USD</div>
+            <div class="detalle">Edición limitada · 11 copias · Incluye PDF + 3 plantillas + Audio Pista 9 + Licencia CC</div>
+            <a href="#" class="btn-neon" id="btn-comprar">Adquirir ahora</a>
+            <p style="margin-top:1rem; font-size:0.8rem; color:#5a4e7a;">* Plan $0: paga solo cuando monetices con el kit</p>
+        </div>
+
+        <!-- CITAS FINALES -->
+        <div class="cita" style="border-left-color:#FFD700;">
+            "El 'Soberano Integral' no es un título cósmico. Es una decisión: <strong>tomar acción cuando otros solo teorizan</strong>."
+            <span class="autor">— Marco Antonio Rojas Valdovinos</span>
+        </div>
+
+        <div style="text-align:center; margin:2.5rem 0;">
+            <span style="display:inline-block; background:#1a142b; border:1px solid #ff66ff; padding:0.3rem 2rem; border-radius:30px; color:#ff66ff; font-size:0.8rem; letter-spacing:2px;">KRONOS © 2026 · Safe Creative 2607146379465</span>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p><span class="brand">KRONOS</span> — La historia real de un creador que dejó de hablar y empezó a facturar.</p>
+            <p style="margin-top:0.5rem;">Diseño neón · Capítulo 1 · Licencia CC BY-NC-ND 4.0</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // ===== PARTÍCULAS NEÓN EN EL FONDO =====
+        (function() {
+            const canvas = document.getElementById('canvas-bg');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 80;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2.5 + 1;
+                    this.speedX = (Math.random() - 0.5) * 0.6;
+                    this.speedY = (Math.random() - 0.5) * 0.6;
+                    this.opacity = Math.random() * 0.6 + 0.2;
+                    this.color = ['#FFD700', '#00ffff', '#ff66ff', '#b3a5d9'][Math.floor(Math.random() * 4)];
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 12;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                // líneas entre partículas cercanas
+                ctx.globalAlpha = 0.08;
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // ===== BOTÓN COMPRAR (simulación) =====
+        document.getElementById('btn-comprar').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('🔗 Enlace de pago: https://buy.stripe.com/... (sustituir por el real)');
+            // Aquí iría el link real de Stripe o Gumroad
+        });
+
+        // ===== EFECTO DE TIPO EN TÍTULOS (sutil) =====
+        console.log('KRONOS · Capítulo 1 · El creador encerrado en su propia mitología');
+    </script>
+
+</body>
+</html>
