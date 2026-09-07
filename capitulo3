@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRONOS · Capítulo 3 · El Salto Corporativo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a080f;
+            color: #e0e0f0;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a142b; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+
+        #canvas-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 3rem;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            padding: 2rem 0 1.5rem;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+            margin-bottom: 3rem;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 3.8rem;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #D4AF37, #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+        }
+        .subhead {
+            font-size: 0.9rem;
+            letter-spacing: 6px;
+            color: #b3a5d9;
+            margin-top: 0.2rem;
+            text-transform: uppercase;
+        }
+        .subhead span {
+            color: #D4AF37;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Títulos */
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+        }
+        h1 {
+            font-size: 2.8rem;
+            color: #D4AF37;
+            text-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #00ccff;
+            text-shadow: 0 0 15px rgba(0, 204, 255, 0.2);
+            margin: 2.5rem 0 1rem;
+            border-left: 4px solid #D4AF37;
+            padding-left: 1rem;
+        }
+        h3 {
+            color: #ff66cc;
+            text-shadow: 0 0 10px rgba(255, 102, 204, 0.2);
+            margin: 1.8rem 0 0.5rem;
+        }
+
+        .capitulo-marker {
+            font-size: 0.8rem;
+            color: #D4AF37;
+            letter-spacing: 2px;
+            background: rgba(212, 175, 55, 0.1);
+            display: inline-block;
+            padding: 0.2rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid #D4AF37;
+            margin-bottom: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            font-weight: 300;
+        }
+        .highlight {
+            color: #D4AF37;
+            font-weight: 700;
+        }
+        .neon-box {
+            background: rgba(45, 27, 105, 0.25);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 1.8rem 2rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.05);
+        }
+        .neon-box strong {
+            color: #00ccff;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .card-activo {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 1.2rem;
+            transition: 0.3s;
+        }
+        .card-activo:hover {
+            border-color: #D4AF37;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+        }
+        .card-activo .titulo {
+            color: #D4AF37;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+        .card-activo .precio {
+            color: #00ccff;
+            font-weight: 700;
+            font-size: 1.6rem;
+        }
+
+        .lecciones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+        .leccion-item {
+            background: rgba(0,0,0,0.4);
+            border-left: 3px solid #D4AF37;
+            padding: 0.8rem 1.2rem;
+            border-radius: 0 8px 8px 0;
+            transition: 0.2s;
+        }
+        .leccion-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            transform: translateX(5px);
+        }
+        .leccion-item .num {
+            color: #ff66cc;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .cita {
+            font-style: italic;
+            font-size: 1.1rem;
+            border-left: 4px solid #D4AF37;
+            padding-left: 1.5rem;
+            margin: 1.8rem 0;
+            color: #d4caff;
+        }
+        .cita .autor {
+            display: block;
+            margin-top: 0.3rem;
+            font-style: normal;
+            color: #D4AF37;
+            font-weight: 700;
+        }
+
+        .btn-neon {
+            display: inline-block;
+            background: transparent;
+            border: 2px solid #D4AF37;
+            color: #D4AF37;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.8rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        .btn-neon:hover {
+            background: #D4AF37;
+            color: #0a080f;
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.5);
+            transform: scale(1.05);
+        }
+        .btn-neon.secundario {
+            border-color: #00ccff;
+            color: #00ccff;
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.1);
+        }
+        .btn-neon.secundario:hover {
+            background: #00ccff;
+            color: #0a080f;
+            box-shadow: 0 0 60px rgba(0, 204, 255, 0.4);
+        }
+
+        .producto-card {
+            background: linear-gradient(145deg, #1a142b, #0a080f);
+            border: 2px solid #D4AF37;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2.5rem 0;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
+        }
+        .producto-card .precio {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: #D4AF37;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+        .producto-card .detalle {
+            color: #b3a5d9;
+            margin: 0.5rem 0 1.5rem;
+        }
+
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.15);
+            text-align: center;
+            font-size: 0.8rem;
+            color: #5a4e7a;
+        }
+        .footer .brand {
+            color: #D4AF37;
+        }
+
+        .img-demo {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 700px) {
+            .logo { font-size: 2.5rem; letter-spacing: 4px; }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.6rem; }
+            .grid-2, .lecciones { grid-template-columns: 1fr; }
+            .producto-card .precio { font-size: 2.4rem; }
+            .btn-neon { font-size: 0.9rem; padding: 0.6rem 1.5rem; }
+            .neon-box { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas-bg"></canvas>
+    <div class="container">
+
+        <header class="header">
+            <div class="logo">KRONOS</div>
+            <div class="subhead">Capítulo 3 · <span>El Salto Corporativo</span></div>
+        </header>
+
+        <div class="capitulo-marker">▸ TERCER CAPÍTULO ◂</div>
+        <h1>De renders a manuales de operaciones</h1>
+
+        <p>Marco había dominado el arte de crear <span class="highlight">imágenes del futuro</span>: satélites de obsidiana, núcleos de fusión, sistemas solares como data centers. Pero un día, mientras investigaba cómo posicionarse frente a clientes como Porsche, encontró algo que cambió su negocio para siempre.</p>
+
+        <p>No encontró un tutorial de diseño. Encontró <strong>el manual de operaciones de Porsche</strong>. Un documento que no era bonito, sino <em>autoritario</em>. Y entendió la diferencia entre vender "arte" y vender "infraestructura".</p>
+
+        <div class="neon-box">
+            <h3 style="margin-top:0; color:#D4AF37;">El descubrimiento que valió $2,997</h3>
+            <p>Marco descargó el manual oficial del Porsche 911 Turbo S Hybrid 2026 (711 HP, $5.2M MXN). No era un PDF bonito, era un <strong>documento de ingeniería</strong> que transmitía certeza, control y lujo.</p>
+            <p>Entonces aplicó su propia fórmula:</p>
+            <ul style="list-style:none; padding-left:0; margin-top:1rem;">
+                <li style="padding:0.3rem 0; border-bottom:1px solid rgba(212,175,55,0.1);">✧ <strong>Estructura</strong> → tomó el formato técnico de Porsche</li>
+                <li style="padding:0.3rem 0; border-bottom:1px solid rgba(212,175,55,0.1);">✧ <strong>Estética</strong> → aplicó su paleta de oro y obsidiana</li>
+                <li style="padding:0.3rem 0; border-bottom:1px solid rgba(212,175,55,0.1);">✧ <strong>Narrativa</strong> → lo convirtió en un "documento confidencial"</li>
+                <li style="padding:0.3rem 0;">✧ <strong>Precio</strong> → lo ofreció como licencia corporativa por $2,997</li>
+            </ul>
+            <p style="margin-top:1.2rem;">Ahora su portafolio no era una galería, era una <strong>sala de juntas</strong>.</p>
+        </div>
+
+        <h2>El activo que abrió puertas</h2>
+
+        <div class="grid-2">
+            <div class="card-activo">
+                <div class="titulo">VALDOVINOS X PORSCHE MÉXICO</div>
+                <div style="font-size:0.8rem; color:#b3a5d9;">911 Turbo S Hybrid 2026 · Edición Mexicana 001/100</div>
+                <div style="margin:0.5rem 0; color:#D4AF37;">CONFIDENCIAL · SOLO USO INTERNO</div>
+                <div style="font-size:0.8rem; color:#888;">711 HP · 0-100 en 2.5s · $5.2M MXN</div>
+            </div>
+            <div class="card-activo">
+                <div class="titulo">PÁGINA INTERIOR · DESPIECE T-HYBRID</div>
+                <div style="font-size:0.8rem; color:#b3a5d9;">Motor bóxer 3.6L + turbos eléctricos</div>
+                <div style="margin:0.5rem 0; color:#00ccff;">DOCUMENTO FORENSE · REV 2026.07</div>
+                <div style="font-size:0.8rem; color:#888;">Sistema 400V · 1.9kWh · PDK 8 vel.</div>
+            </div>
+        </div>
+
+        <p>Con este manual demo, Marco ya no tenía que explicar qué hacía. <strong>Mostraba</strong>. Y el mensaje era inequívoco:</p>
+
+        <div style="background:rgba(212,175,55,0.05); border-left:4px solid #D4AF37; padding:1.2rem; margin:1.5rem 0;">
+            <p style="margin:0; font-style:italic; font-size:1.1rem;">"Así documento yo tu tecnología. Nivel Porsche México."</p>
+        </div>
+
+        <h2>El giro estratégico: B2B de lujo</h2>
+
+        <p>Marco entendió que sus clientes reales no eran diseñadores ni artistas. Eran <strong>fundadores de Deep Tech</strong>, directores de agencias y ejecutivos de marcas automotrices. Gente que no compra renders, compra <strong>certidumbre visual para inversionistas</strong>.</p>
+
+        <div class="grid-2">
+            <div class="card-activo" style="border-color:#00ccff;">
+                <div style="color:#00ccff; font-weight:700;">CLIENTE OBJETIVO</div>
+                <ul style="list-style:none; padding:0; margin:0.5rem 0;">
+                    <li>✦ Startups Deep Tech (rondas $10M+)</li>
+                    <li>✦ Agencias con briefs urgentes</li>
+                    <li>✦ Automotriz / Aeroespacial</li>
+                    <li>✦ Fundadores de YC / LATAM</li>
+                </ul>
+            </div>
+            <div class="card-activo" style="border-color:#D4AF37;">
+                <div style="color:#D4AF37; font-weight:700;">PROPUESTA DE VALOR</div>
+                <ul style="list-style:none; padding:0; margin:0.5rem 0;">
+                    <li>✦ Convierto tecnología compleja en autoridad</li>
+                    <li>✦ Planos del futuro en 48h</li>
+                    <li>✦ Licencia comercial perpetua</li>
+                    <li>✦ Precio: $2,997 USD / proyecto</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>La nueva oferta</h2>
+
+        <p>Marco estructuró su negocio en dos niveles, manteniendo el Kit de $297 como puerta de entrada y la Licencia Corporativa como cierre gordo:</p>
+
+        <div class="producto-card">
+            <p style="font-family:'Orbitron',sans-serif; color:#D4AF37; letter-spacing:2px; font-size:1.4rem;">KIT KRONOS</p>
+            <div class="precio">$297 USD</div>
+            <div class="detalle">11 Códices base · Portafolio de 10 seg · Acceso inmediato</div>
+            <a href="https://buy.stripe.com/eVq28r6PaeoSfDH4N47ss02" target="_blank" class="btn-neon">Adquirir kit</a>
+        </div>
+
+        <div class="producto-card" style="border-color:#00ccff;">
+            <p style="font-family:'Orbitron',sans-serif; color:#00ccff; letter-spacing:2px; font-size:1.4rem;">LICENCIA CORPORATIVA V8</p>
+            <div class="precio" style="color:#00ccff;">$2,997 USD</div>
+            <div class="detalle">3 Visuales Hero 8K + 10 adaptaciones · Manual de operaciones personalizado · Entrega 48h</div>
+            <a href="#" class="btn-neon secundario" id="btn-licencia">Solicitar información</a>
+            <p style="margin-top:0.8rem; font-size:0.8rem; color:#5a4e7a;">* Solo 3 licencias al mes · Trato directo con Marco</p>
+        </div>
+
+        <div class="cita">
+            "El cliente de $2,997 no compra una imagen. Compra la certeza de que su tecnología ya es inevitable."
+            <span class="autor">— Marco Antonio Rojas Valdovinos</span>
+        </div>
+
+        <h2>Lecciones del Capítulo 3</h2>
+        <div class="lecciones">
+            <div class="leccion-item"><span class="num">01</span> Los manuales de operaciones venden más que los renders bonitos.</div>
+            <div class="leccion-item"><span class="num">02</span> Tomar prestado el formato de una marca de lujo eleva tu percepción.</div>
+            <div class="leccion-item"><span class="num">03</span> Los fundadores de Deep Tech pagan por certidumbre, no por arte.</div>
+            <div class="leccion-item"><span class="num">04</span> Un portafolio de 3 imágenes + un manual demo cierra $2,997.</div>
+            <div class="leccion-item"><span class="num">05</span> El "confidencial" es teatro que vende exclusividad.</div>
+            <div class="leccion-item"><span class="num">06</span> Siempre ofrece una entrada baja ($297) y una salida alta ($2,997).</div>
+        </div>
+
+        <div style="text-align:center; margin:2rem 0;">
+            <span style="display:inline-block; background:#1a142b; border:1px solid #D4AF37; padding:0.3rem 2rem; border-radius:30px; color:#D4AF37; font-size:0.8rem; letter-spacing:2px;">KRONOS © 2026 · Safe Creative 2607146379465</span>
+        </div>
+
+        <footer class="footer">
+            <p><span class="brand">KRONOS</span> — Capítulo 3: El creador que dejó de vender píxeles y empezó a vender infraestructura.</p>
+            <p style="margin-top:0.5rem;">Diseño de lujo · Inspirado en Porsche México · Licencia CC BY-NC-ND 4.0</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Partículas de fondo estilo neón corporativo
+        (function() {
+            const canvas = document.getElementById('canvas-bg');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 60;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.4;
+                    this.speedY = (Math.random() - 0.5) * 0.4;
+                    this.opacity = Math.random() * 0.5 + 0.1;
+                    this.color = ['#D4AF37', '#00ccff', '#b3a5d9', '#ffffff'][Math.floor(Math.random() * 4)];
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 8;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                // líneas tenues entre partículas cercanas
+                ctx.globalAlpha = 0.05;
+                ctx.strokeStyle = '#D4AF37';
+                ctx.lineWidth = 0.3;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // Botón licencia con mensaje
+        document.getElementById('btn-licencia').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('📩 Escríbeme por WhatsApp al 7225862335 para solicitar tu Licencia Corporativa V8. Incluye manual personalizado + 3 visuales hero.');
+        });
+    </script>
+</body>
+</html>
