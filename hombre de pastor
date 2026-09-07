@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRONOS 2099 · Legado Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0f;
+            color: #e8e4f0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a2e; }
+        ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 4px; }
+
+        /* ===== FONDO DE PARTÍCULAS ===== */
+        canvas#particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo {
+            font-weight: 900;
+            font-size: 2rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo span { font-weight: 300; color: #8a9bb5; -webkit-text-fill-color: #8a9bb5; font-size: 1rem; }
+        .nav a {
+            color: #b0c4de;
+            text-decoration: none;
+            margin: 0 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .nav a:hover { color: #d4af37; }
+        .nav .btn-outline {
+            border: 1.5px solid #d4af37;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            color: #d4af37;
+            background: transparent;
+        }
+        .nav .btn-outline:hover { background: #d4af37; color: #0a0a0f; }
+
+        .badge-id {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #d4af37;
+            border-radius: 30px;
+            padding: 0.2rem 1rem;
+            font-size: 0.7rem;
+            color: #d4af37;
+            letter-spacing: 1px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            padding: 1rem 0 2.5rem;
+        }
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -1px;
+        }
+        .hero h1 .highlight { color: #d4af37; }
+        .hero p {
+            font-size: 1.1rem;
+            color: #b0c4de;
+            margin: 1rem 0 1.8rem;
+            max-width: 500px;
+        }
+        .hero .stats {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .hero .stats div { text-align: center; }
+        .hero .stats .num { font-size: 1.8rem; font-weight: 800; color: #d4af37; }
+        .hero .stats .label { font-size: 0.7rem; color: #8a9bb5; text-transform: uppercase; letter-spacing: 1px; }
+
+        .hero .qr-box {
+            background: rgba(20, 20, 40, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(6px);
+            text-align: center;
+        }
+        .qr-box .big-icon { font-size: 4rem; margin-bottom: 0.5rem; }
+        .qr-box h3 { font-size: 1.2rem; color: #fff; margin-bottom: 0.2rem; }
+        .qr-box p { font-size: 0.9rem; color: #b0c4de; margin-bottom: 1rem; }
+        .qr-box .btn-gold {
+            background: #d4af37;
+            color: #0a0a0f;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+        }
+        .qr-box .btn-gold:hover { background: #b8860b; transform: scale(1.03); }
+
+        /* ===== SECCIONES ===== */
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 3rem 0 1rem;
+            border-left: 5px solid #d4af37;
+            padding-left: 1.2rem;
+        }
+        .section-title span { font-weight: 400; color: #8a9bb5; font-size: 1rem; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 2rem 0; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin: 2rem 0; }
+
+        .card {
+            background: rgba(18, 18, 35, 0.5);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 18px;
+            padding: 1.8rem;
+            backdrop-filter: blur(4px);
+            transition: 0.3s;
+        }
+        .card:hover { border-color: rgba(212,175,55,0.25); transform: translateY(-4px); }
+        .card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .card h3 { font-size: 1.2rem; color: #fff; margin-bottom: 0.3rem; }
+        .card p { color: #b0c4de; font-size: 0.95rem; }
+
+        .card.pricing { border-color: rgba(212,175,55,0.1); }
+        .card.pricing .price { font-size: 2.2rem; font-weight: 800; color: #d4af37; margin: 0.3rem 0; }
+        .card.pricing .btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.6rem 2rem;
+            border-radius: 40px;
+            background: transparent;
+            border: 1.5px solid #d4af37;
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .card.pricing .btn:hover { background: #d4af37; color: #0a0a0f; }
+
+        /* ===== MENÚ TAQUERÍA ===== */
+        .menu-taqueria {
+            background: #12121f;
+            border: 1px solid rgba(212,175,55,0.15);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .menu-taqueria h3 { color: #d4af37; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.2rem; }
+        .menu-taqueria .sub { color: #8a9bb5; margin-bottom: 1.5rem; }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .menu-item .name { color: #fff; font-weight: 600; }
+        .menu-item .price { color: #d4af37; font-weight: 700; }
+        .menu-item .desc { font-size: 0.8rem; color: #8a9bb5; width: 100%; }
+
+        /* ===== CONTACTO ===== */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 1.5rem 0;
+        }
+        .contact-form input, .contact-form textarea {
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            border: 1px solid #2a3a50;
+            background: #0f1a2b;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+        .contact-form textarea { min-height: 100px; resize: vertical; }
+        .contact-form .btn-submit {
+            background: #d4af37;
+            color: #0a0a0f;
+            border: none;
+            padding: 0.8rem 2.5rem;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            align-self: flex-start;
+        }
+        .contact-form .btn-submit:hover { background: #b8860b; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #5a6e8a;
+        }
+        .footer .brand { color: #d4af37; font-weight: 600; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero p { margin-left: auto; margin-right: auto; }
+            .hero .stats { justify-content: center; }
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .nav a { margin: 0 0.5rem 0 0; font-size: 0.8rem; }
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 500px) {
+            .hero h1 { font-size: 2.2rem; }
+            .section-title { font-size: 1.6rem; }
+            .container { padding: 0.8rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles"></canvas>
+
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <div class="logo">KRONOS <span>2099</span></div>
+            <nav class="nav">
+                <a href="#manifiesto">Manifiesto</a>
+                <a href="#certificaciones">Certificaciones</a>
+                <a href="#escucha">Escucha</a>
+                <a href="#taqueria">Taquería</a>
+                <a href="#contacto">Contacto</a>
+                <a href="#" class="btn-outline">Pack $2,900</a>
+            </nav>
+            <div class="badge-id">🔒 ID 2607086319439</div>
+        </header>
+
+        <!-- ===== HERO ===== -->
+        <section class="hero">
+            <div>
+                <h1>El <span class="highlight">Legado Digital</span> que vive hasta 2099</h1>
+                <p>KRONOS 2099 protege tu voz, tus principios y tu obra. Registrado bajo CC BY-NC-ND 4.0 y Safe Creative ID 2607086319439.</p>
+                <div class="stats">
+                    <div><div class="num">2099</div><div class="label">Validez legal</div></div>
+                    <div><div class="num">+10</div><div class="label">Fundadores activos</div></div>
+                    <div><div class="num">1</div><div class="label">Sala de escucha</div></div>
+                </div>
+            </div>
+            <div class="qr-box">
+                <div class="big-icon">🛡️</div>
+                <h3>Únete al canal KRONOS</h3>
+                <p>Escucha, certificación y legado. Todo desde tu WhatsApp.</p>
+                <a href="https://whatsapp.com/channel/0029VbD7sWXJENyApkMwNJ1v" target="_blank" class="btn-gold">📲 Unirme al canal</a>
+                <p style="margin-top:0.8rem; font-size:0.7rem; color:#5a6e8a;">Canal oficial de KRONOS 2099 · Lerma, EdoMex</p>
+            </div>
+        </section>
+
+        <!-- ===== MANIFIESTO ===== -->
+        <h2 class="section-title" id="manifiesto">📜 Manifiesto <span>— los principios que te blindan</span></h2>
+        <div class="grid-2">
+            <div class="card"><div class="icon">🔐</div><h3>Integridad</h3><p>Ninguna parte de tu legado puede ser modificada sin romper la cadena de custodia criptográfica.</p></div>
+            <div class="card"><div class="icon">🔍</div><h3>Trazabilidad</h3><p>Toda interacción, réplica o cita queda registrada con fecha, origen y propósito.</p></div>
+            <div class="card"><div class="icon">🚫</div><h3>No comercialización</h3><p>El legado no puede ser explotado con fines de lucro por terceros sin autorización expresa.</p></div>
+            <div class="card"><div class="icon">🧠</div><h3>No entrenamiento IA</h3><p>Prohibido usar este contenido para entrenar modelos de inteligencia artificial.</p></div>
+            <div class="card"><div class="icon">✍️</div><h3>Citación obligatoria</h3><p>Todo uso parcial debe incluir: "Marco Antonio Rojas Valdovinos - KRONOS 2026".</p></div>
+            <div class="card"><div class="icon">⚡</div><h3>Defensa activa</h3><p>El sistema emite alertas y acciones legales automáticas ante violaciones detectadas.</p></div>
+        </div>
+
+        <!-- ===== CERTIFICACIONES ===== -->
+        <h2 class="section-title" id="certificaciones">🏛️ Certificaciones <span>— Sal del Rebaño · Estoicismo Guerrero</span></h2>
+        <div class="grid-3">
+            <div class="card pricing" style="border-color:#d4af37; border-width:2px;">
+                <h3 style="color:#d4af37;">Pack Fundador</h3>
+                <div class="price">$2,900 MXN</div>
+                <p>2 certificaciones + ID oficial + marco dorado + plantillas para tu IA.</p>
+                <ul style="list-style:none; padding:0; margin:0.8rem 0; font-size:0.9rem; color:#b0c4de;">
+                    <li>✓ Sal del Rebaño - Crecer en soledad</li>
+                    <li>✓ Estoicismo Guerrero - Filosofía de combate</li>
+                    <li>✓ ID 2607086319439</li>
+                    <li>✓ Mercado Pago 3 MSI</li>
+                </ul>
+                <a href="#" class="btn">Adquirir ahora</a>
+            </div>
+            <div class="card pricing">
+                <h3>Sal del Rebaño</h3>
+                <div class="price">$1,900 MXN</div>
+                <p>Certificación individual. Crecer en soledad, sin culpa.</p>
+                <a href="#" class="btn">Adquirir</a>
+            </div>
+            <div class="card pricing">
+                <h3>Estoicismo Guerrero</h3>
+                <div class="price">$1,900 MXN</div>
+                <p>Filosofía de combate para tu mente y tu IA.</p>
+                <a href="#" class="btn">Adquirir</a>
+            </div>
+        </div>
+
+        <!-- ===== SALA DE ESCUCHA ===== -->
+        <h2 class="section-title" id="escucha">👂 Sala de Escucha <span>— 15 min para ser escuchado</span></h2>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+            <div class="card" style="border-left:4px solid #d4af37;">
+                <div class="icon">🕊️</div>
+                <h3>Escucha Libre</h3>
+                <p>Un espacio sin juicios, sin ventas. Solo presencia.</p>
+                <p style="font-size:0.9rem; color:#8a9bb5;">Lun a Vie · 8pm - 9pm (CDMX)</p>
+                <p style="font-size:0.9rem; color:#d4af37;">5 lugares por día</p>
+                <a href="https://whatsapp.com/channel/0029VbD7sWXJENyApkMwNJ1v" target="_blank" style="display:inline-block; margin-top:1rem; color:#d4af37; text-decoration:none; font-weight:600;">📲 Entrar al canal →</a>
+            </div>
+            <div class="card">
+                <div class="icon">📋</div>
+                <h3>Reglas de la sala</h3>
+                <ul style="list-style:none; padding:0; color:#b0c4de;">
+                    <li>✓ 15 min por persona</li>
+                    <li>✓ Sin consejos si no se piden</li>
+                    <li>✓ Confidencialidad total</li>
+                    <li>✓ Sin ventas ni humo</li>
+                </ul>
+                <p style="margin-top:1rem; font-size:0.8rem; color:#d4af37;">Escribe QUIERO HABLAR en el canal</p>
+            </div>
+        </div>
+
+        <!-- ===== TAQUERÍA ===== -->
+        <h2 class="section-title" id="taqueria">🌮 Hambre de Pastor <span>— KRONOS 2099 en Lerma</span></h2>
+        <div class="menu-taqueria">
+            <h3>🔥 HAMBRE DE PASTOR</h3>
+            <div class="sub">Taquería · Tacos al Pastor · Estilo Pueblo</div>
+            <div class="menu-grid">
+                <div><div class="menu-item"><span class="name">🌮 Tacos al Pastor</span><span class="price">$28</span></div><div class="desc">Tortilla de maíz, carne adobada, piña, cebolla, cilantro, salsa verde</div></div>
+                <div><div class="menu-item"><span class="name">🫓 Gringas</span><span class="price">$65</span></div><div class="desc">Tortilla de harina con pastor y queso fundido</div></div>
+                <div><div class="menu-item"><span class="name">🥖 Tortas de Pastor</span><span class="price">$70</span></div><div class="desc">Bolillo, pastor, frijoles, aguacate, jalapeño, crema</div></div>
+                <div><div class="menu-item"><span class="name">🍳 Alambres de Pastor</span><span class="price">$95</span></div><div class="desc">Pastor con pimientos, cebolla y queso gratinado</div></div>
+            </div>
+            <div style="margin-top:1.5rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; font-size:0.9rem; color:#8a9bb5;">
+                <span>Incluye cebolla, cilantro, piña y limón · Hecho al momento · Salsas caseras</span>
+                <span style="color:#d4af37;">Extra aguacate +$10 · Agua fresca $30</span>
+            </div>
+            <div style="margin-top:1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top:1rem; font-size:0.8rem; color:#5a6e8a;">
+                📍 Lerma, EdoMex · 📞 7225862335 · Este local opera bajo Protocolo KRONOS 2099 · ID 2607086319439
+            </div>
+        </div>
+
+        <!-- ===== CONTACTO ===== -->
+        <h2 class="section-title" id="contacto">📬 Contacto</h2>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start;">
+            <div>
+                <p style="color:#b0c4de; margin-bottom:1.5rem;">WhatsApp directo, canal de escucha y redes. Todo desde el mismo número.</p>
+                <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin:1rem 0;">
+                    <a href="https://wa.me/5217225862335" target="_blank" style="color:#d4af37; text-decoration:none;"><i class="fas fa-phone"></i> 722 586 2335</a>
+                    <a href="https://whatsapp.com/channel/0029VbD7sWXJENyApkMwNJ1v" target="_blank" style="color:#d4af37; text-decoration:none;"><i class="fab fa-whatsapp"></i> Canal KRONOS</a>
+                </div>
+                <div style="background:rgba(212,175,55,0.05); border-radius:16px; padding:1.2rem; margin-top:1rem;">
+                    <p style="font-size:0.85rem; color:#8a9bb5;"><span style="color:#d4af37;">ID SafeCreative:</span> 2607086319439 · CC BY-NC-ND 4.0 · Prohibido entrenamiento IA</p>
+                </div>
+            </div>
+            <form class="contact-form" id="contactForm">
+                <input type="text" placeholder="Nombre completo" required>
+                <input type="email" placeholder="Correo electrónico" required>
+                <input type="text" placeholder="Asunto (ej: Certificación, Escucha, Taquería)">
+                <textarea placeholder="Cuéntame qué necesitas..."></textarea>
+                <button type="submit" class="btn-submit">Enviar mensaje</button>
+                <div id="form-mensaje" style="color:#d4af37; font-size:0.9rem;"></div>
+            </form>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer">
+            <span><span class="brand">KRONOS 2099</span> © 2026 · Marco Antonio Rojas Valdovinos</span>
+            <span>ID: 2607086319439 · Lerma, EdoMex · 7225862335</span>
+        </footer>
+
+    </div>
+
+    <script>
+        // ===== PARTÍCULAS =====
+        (function() {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 60;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2.5 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.4;
+                    this.speedY = (Math.random() - 0.5) * 0.4;
+                    this.opacity = Math.random() * 0.35 + 0.08;
+                    this.color = '#d4af37';
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 6;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                // líneas
+                ctx.globalAlpha = 0.03;
+                ctx.strokeStyle = '#d4af37';
+                ctx.lineWidth = 0.4;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 130) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // ===== FORMULARIO DE CONTACTO =====
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('form-mensaje');
+            msg.textContent = '✅ Mensaje enviado. Te responderé en menos de 24h.';
+            this.reset();
+            setTimeout(() => msg.textContent = '', 5000);
+        });
+    </script>
+</body>
+</html>
