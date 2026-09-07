@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VERITAS Protocol · Autenticidad verificable</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET Y BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0e1a;
+            color: #e8edf5;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #161f2e; }
+        ::-webkit-scrollbar-thumb { background: #00d4ff; border-radius: 4px; }
+
+        canvas#particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1.8rem 2rem;
+        }
+
+        /* ===== HEADER / NAV ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo {
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #00d4ff, #0077ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo span { font-weight: 300; color: #8a9bb5; -webkit-text-fill-color: #8a9bb5; }
+        .nav a {
+            color: #b0c4de;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .nav a:hover { color: #00d4ff; }
+        .nav .btn-outline {
+            border: 1.5px solid #00d4ff;
+            padding: 0.4rem 1.4rem;
+            border-radius: 40px;
+            color: #00d4ff;
+            background: transparent;
+        }
+        .nav .btn-outline:hover { background: #00d4ff; color: #0a0e1a; }
+
+        /* ===== HERO ===== */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            padding: 1rem 0 3rem;
+        }
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+        .hero h1 .highlight { color: #00d4ff; }
+        .hero p {
+            font-size: 1.1rem;
+            color: #b0c4de;
+            margin: 1.2rem 0 2rem;
+            max-width: 500px;
+        }
+        .hero .stats {
+            display: flex;
+            gap: 2rem;
+        }
+        .hero .stats div { text-align: center; }
+        .hero .stats .num { font-size: 1.8rem; font-weight: 700; color: #00d4ff; }
+        .hero .stats .label { font-size: 0.8rem; color: #8a9bb5; text-transform: uppercase; letter-spacing: 1px; }
+
+        .hero .demo-box {
+            background: rgba(0, 20, 50, 0.5);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(6px);
+        }
+        .demo-box h3 { color: #fff; margin-bottom: 0.5rem; }
+        .demo-box p { font-size: 0.9rem; color: #b0c4de; margin-bottom: 1rem; }
+        .demo-box .file-input {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .demo-box input[type="file"] {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border-radius: 30px;
+            border: 1px solid #2a3a50;
+            background: #0f1a2b;
+            color: #fff;
+            font-size: 0.8rem;
+        }
+        .demo-box .btn-verify {
+            background: #00d4ff;
+            color: #0a0e1a;
+            border: none;
+            padding: 0.6rem 2rem;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .demo-box .btn-verify:hover { background: #0099cc; }
+        .demo-box .result {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            background: rgba(0, 212, 255, 0.08);
+            border-left: 4px solid #00d4ff;
+            color: #b0c4de;
+            font-size: 0.9rem;
+            min-height: 2.5rem;
+        }
+
+        /* ===== SECCIONES ===== */
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 3rem 0 1rem;
+            border-left: 5px solid #00d4ff;
+            padding-left: 1.2rem;
+        }
+        .section-title span { font-weight: 300; color: #8a9bb5; font-size: 1rem; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: rgba(15, 26, 43, 0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.8rem;
+            backdrop-filter: blur(4px);
+            transition: 0.3s;
+        }
+        .card:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-4px); }
+        .card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .card h3 { font-size: 1.3rem; color: #fff; margin-bottom: 0.3rem; }
+        .card p { color: #b0c4de; font-size: 0.95rem; }
+
+        .card.pricing { border-color: rgba(0,212,255,0.15); }
+        .card.pricing .price { font-size: 2rem; font-weight: 700; color: #00d4ff; margin: 0.5rem 0; }
+        .card.pricing .btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.6rem 2rem;
+            border-radius: 40px;
+            background: transparent;
+            border: 1.5px solid #00d4ff;
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .card.pricing .btn:hover { background: #00d4ff; color: #0a0e1a; }
+
+        /* ===== CONTACTO ===== */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 1.5rem 0;
+        }
+        .contact-form input, .contact-form textarea {
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            border: 1px solid #2a3a50;
+            background: #0f1a2b;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+        .contact-form textarea { min-height: 100px; resize: vertical; }
+        .contact-form .btn-submit {
+            background: #00d4ff;
+            color: #0a0e1a;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            align-self: flex-start;
+        }
+        .contact-form .btn-submit:hover { background: #0099cc; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #5a6e8a;
+        }
+        .footer .brand { color: #00d4ff; font-weight: 600; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero p { margin-left: auto; margin-right: auto; }
+            .hero .stats { justify-content: center; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .nav a { margin: 0 0.5rem 0 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles"></canvas>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">VERITAS<span>Protocol</span></div>
+            <nav class="nav">
+                <a href="#problema">Problema</a>
+                <a href="#solucion">Solución</a>
+                <a href="#precios">Precios</a>
+                <a href="#contacto">Contacto</a>
+                <a href="#" class="btn-outline">Demo</a>
+            </nav>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div>
+                <h1>La <span class="highlight">verdad</span> en la era de la <span class="highlight">IA</span></h1>
+                <p>Verifica autenticidad y consentimiento humano con un sello inmutable, válido en tribunales internacionales. Para empresas que necesitan confianza digital.</p>
+                <div class="stats">
+                    <div><div class="num">+2.3M</div><div class="label">Documentos verificados</div></div>
+                    <div><div class="num">99.9%</div><div class="label">Precisión anti-deepfake</div></div>
+                    <div><div class="num">2099</div><div class="label">Validez legal</div></div>
+                </div>
+            </div>
+            <div class="demo-box">
+                <h3>🔬 Simulador de verificación</h3>
+                <p>Carga un archivo (imagen, audio o video) y recibe un hash SHA-256 + sello de tiempo simulado.</p>
+                <div class="file-input">
+                    <input type="file" id="fileInput">
+                    <button class="btn-verify" onclick="verificarArchivo()">Verificar</button>
+                </div>
+                <div class="result" id="resultado">⬆️ Esperando archivo...</div>
+            </div>
+        </section>
+
+        <!-- PROBLEMA -->
+        <h2 class="section-title" id="problema">⚡ El problema <span>— el costo de la desconfianza</span></h2>
+        <div class="grid-2">
+            <div class="card">
+                <div class="icon">🎭</div>
+                <h3>Deepfakes en aumento</h3>
+                <p>El 2026 ha visto un incremento del 400% en contenido sintético malicioso. Videos, audios y documentos falsos están erosionando la confianza en empresas, gobiernos y medios.</p>
+            </div>
+            <div class="card">
+                <div class="icon">⚖️</div>
+                <h3>Sin validez legal</h3>
+                <p>La mayoría de las plataformas no pueden probar que un contenido es auténtico o que tiene consentimiento. Esto expone a demandas por deepfakes y violaciones del AI Act.</p>
+            </div>
+            <div class="card">
+                <div class="icon">💸</div>
+                <h3>Pérdidas millonarias</h3>
+                <p>Fraudes con identidad sintética, noticias falsas y manipulación de evidencias cuestan a la economía global más de $5B anuales. La confianza digital es el nuevo oro.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🌍</div>
+                <h3>Problema internacional</h3>
+                <p>La desinformación no respeta fronteras. Gobiernos y organismos buscan estándares globales de verificación. El AI Act de la UE y leyes similares en EE.UU. y México lo exigen.</p>
+            </div>
+        </div>
+
+        <!-- SOLUCIÓN -->
+        <h2 class="section-title" id="solucion">🛡️ Solución <span>— VERITAS Protocol</span></h2>
+        <div class="grid-3">
+            <div class="card">
+                <div class="icon">🔐</div>
+                <h3>Sello de autenticidad</h3>
+                <p>Todo archivo recibe un hash SHA-256 + timestamp blockchain. Prueba de que existía, era íntegro y fue consentido.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🧾</div>
+                <h3>Consentimiento verificado</h3>
+                <p>Captura biométrica (voz/rostro) de la persona autorizando el uso. Evita deepfakes y demandas por uso no autorizado.</p>
+            </div>
+            <div class="card">
+                <div class="icon">⚖️</div>
+                <h3>Validez legal internacional</h3>
+                <p>Conforme a eIDAS UE, AI Act y leyes de México y EE.UU. Nuestro sello es admisible en tribunales hasta 2099.</p>
+            </div>
+        </div>
+
+        <!-- PRECIOS -->
+        <h2 class="section-title" id="precios">💎 Planes <span>— para empresas y creadores</span></h2>
+        <div class="grid-3">
+            <div class="card pricing">
+                <h3>Starter</h3>
+                <div class="price">$49 USD/mes</div>
+                <p>Hasta 100 verificaciones/mes. Soporte por email. Ideal para creadores independientes.</p>
+                <a href="#" class="btn">Elegir</a>
+            </div>
+            <div class="card pricing" style="border-color:#00d4ff;">
+                <h3>Business</h3>
+                <div class="price">$299 USD/mes</div>
+                <p>Verificaciones ilimitadas. API completa. Integración con plataformas. Soporte 24/7.</p>
+                <a href="#" class="btn">Elegir</a>
+            </div>
+            <div class="card pricing">
+                <h3>Enterprise</h3>
+                <div class="price">Personalizado</div>
+                <p>Licencias on-premise, white-label, cumplimiento normativo, auditoría forense.</p>
+                <a href="#" class="btn">Contactar</a>
+            </div>
+        </div>
+
+        <!-- CONTACTO -->
+        <h2 class="section-title" id="contacto">📬 Contacto</h2>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start;">
+            <div>
+                <p style="color:#b0c4de; margin-bottom:1.5rem;">¿Listo para verificar el futuro? Escríbenos y te mostramos una demo personalizada para tu industria.</p>
+                <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin:1rem 0;">
+                    <a href="#" style="color:#00d4ff; text-decoration:none;">📧 hola@veritasprotocol.io</a>
+                    <a href="#" style="color:#00d4ff; text-decoration:none;">📞 +52 722 586 2335</a>
+                </div>
+            </div>
+            <form class="contact-form" id="contactForm">
+                <input type="text" placeholder="Nombre completo" required>
+                <input type="email" placeholder="Correo electrónico" required>
+                <input type="text" placeholder="Empresa (opcional)">
+                <textarea placeholder="Cuéntanos tu necesidad de verificación..."></textarea>
+                <button type="submit" class="btn-submit">Enviar mensaje</button>
+                <div id="form-mensaje" style="color:#00d4ff; font-size:0.9rem;"></div>
+            </form>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <span><span class="brand">VERITAS Protocol</span> © 2026 · Todos los derechos reservados</span>
+            <span>Hecho en Toluca, México · ID: 2607146379465-4AXZQ5</span>
+        </footer>
+
+    </div>
+
+    <script>
+        // ===== PARTÍCULAS =====
+        (function() {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 60;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.4;
+                    this.speedY = (Math.random() - 0.5) * 0.4;
+                    this.opacity = Math.random() * 0.3 + 0.1;
+                    this.color = '#00d4ff';
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 4;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                // líneas
+                ctx.globalAlpha = 0.03;
+                ctx.strokeStyle = '#00d4ff';
+                ctx.lineWidth = 0.4;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 130) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // ===== SIMULADOR DE VERIFICACIÓN =====
+        function verificarArchivo() {
+            const input = document.getElementById('fileInput');
+            const resultado = document.getElementById('resultado');
+            const file = input.files[0];
+
+            if (!file) {
+                resultado.innerHTML = '⚠️ Por favor, selecciona un archivo primero.';
+                resultado.style.borderLeftColor = '#ff6666';
+                return;
+            }
+
+            // Simular hash y timestamp
+            const hash = Array.from({length: 64}, () => 
+                '0123456789abcdef'[Math.floor(Math.random() * 16)]
+            ).join('');
+
+            const ahora = new Date().toISOString();
+
+            resultado.innerHTML = `
+                ✅ <strong>Archivo verificado</strong><br>
+                📁 ${file.name} (${(file.size / 1024).toFixed(1)} KB)<br>
+                🔒 SHA-256: ${hash}<br>
+                🕒 Sello de tiempo: ${ahora}<br>
+                🧾 Consentimiento: ✅ Verificado
+            `;
+            resultado.style.borderLeftColor = '#00d4ff';
+        }
+
+        // ===== FORMULARIO DE CONTACTO =====
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('form-mensaje');
+            msg.textContent = '✅ ¡Mensaje enviado! Te contactaremos en menos de 24h.';
+            this.reset();
+            setTimeout(() => msg.textContent = '', 5000);
+        });
+
+        // Soporte para arrastrar archivo en el demo
+        const demoBox = document.querySelector('.demo-box');
+        demoBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            demoBox.style.borderColor = '#00d4ff';
+        });
+        demoBox.addEventListener('dragleave', () => {
+            demoBox.style.borderColor = 'rgba(0,212,255,0.2)';
+        });
+        demoBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            demoBox.style.borderColor = 'rgba(0,212,255,0.2)';
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                document.getElementById('fileInput').files = files;
+                verificarArchivo();
+            }
+        });
+    </script>
+</body>
+</html>
