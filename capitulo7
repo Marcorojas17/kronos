@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRONOS Protocol · Sello de Confianza Legal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a080f;
+            color: #e8e4f0;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a142b; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+
+        canvas#particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1.8rem 2rem;
+        }
+
+        /* HEADER / NAV */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 2rem;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #D4AF37, #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav a {
+            color: #b3a5d9;
+            text-decoration: none;
+            margin: 0 0.8rem;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        .nav a:hover { color: #D4AF37; }
+
+        .badge {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #D4AF37;
+            border-radius: 30px;
+            padding: 0.2rem 1.2rem;
+            font-size: 0.65rem;
+            color: #D4AF37;
+            letter-spacing: 1px;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 2rem 0 2.5rem;
+        }
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            color: #fff;
+        }
+        .hero h1 .highlight { background: linear-gradient(135deg, #D4AF37, #ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p {
+            font-size: 1.1rem;
+            color: #b3a5d9;
+            max-width: 700px;
+            margin: 1rem auto;
+        }
+        .hero .folio { font-size: 0.8rem; color: #D4AF37; letter-spacing: 1px; border: 1px solid rgba(212,175,55,0.2); display: inline-block; padding: 0.2rem 1.5rem; border-radius: 40px; margin-top: 0.5rem; }
+
+        /* SECCIONES */
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin: 2.5rem 0 1rem;
+            border-left: 4px solid #D4AF37;
+            padding-left: 1.2rem;
+        }
+        .section-title span { font-size: 0.9rem; color: #b3a5d9; font-weight: 300; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: rgba(20, 15, 35, 0.6);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.8rem;
+            backdrop-filter: blur(4px);
+            transition: 0.3s;
+        }
+        .card:hover { border-color: rgba(212,175,55,0.3); transform: translateY(-4px); }
+        .card h3 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; color: #fff; margin-bottom: 0.3rem; }
+        .card .price { font-size: 1.8rem; color: #D4AF37; font-weight: 700; margin: 0.5rem 0; }
+        .card p { color: #b3a5d9; font-size: 0.95rem; }
+        .btn {
+            display: inline-block;
+            background: transparent;
+            border: 1.5px solid #D4AF37;
+            color: #D4AF37;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            padding: 0.6rem 1.8rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            cursor: pointer;
+            margin-top: 0.8rem;
+        }
+        .btn:hover { background: #D4AF37; color: #0a080f; }
+        .btn.cyan { border-color: #00ccff; color: #00ccff; }
+        .btn.cyan:hover { background: #00ccff; color: #0a080f; }
+        .btn.gold-bg { background: #D4AF37; color: #0a080f; border: none; }
+        .btn.gold-bg:hover { background: #b8860b; }
+
+        .card.corporate { border-color: rgba(0,204,255,0.15); }
+        .card.corporate h3 { color: #00ccff; }
+
+        /* FUNDADORES */
+        .founders-box {
+            background: linear-gradient(145deg, #1a142b, #0a080f);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        .founders-box .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin: 1.2rem 0;
+        }
+        .founders-box .item {
+            background: rgba(0,0,0,0.3);
+            padding: 0.8rem;
+            border-radius: 12px;
+            border-left: 3px solid #D4AF37;
+        }
+        .founders-box .item .num { color: #D4AF37; font-weight: 700; font-size: 1.2rem; }
+        .founders-box .item .precio { color: #fff; font-weight: 700; }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1rem 0;
+            justify-content: center;
+        }
+        .input-group input {
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid #444;
+            background: #1a142b;
+            color: #fff;
+            font-family: 'Roboto Mono', monospace;
+            flex: 1 1 200px;
+        }
+        .input-group input::placeholder { color: #5a4e7a; }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #5a4e7a;
+        }
+        .footer .brand { color: #D4AF37; }
+
+        @media (max-width: 700px) {
+            .grid-2, .founders-box .grid-3 { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.4rem; }
+            .nav a { margin: 0 0.5rem; font-size: 0.7rem; }
+            .header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles"></canvas>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo">KRONOS</div>
+            <nav class="nav">
+                <a href="#productos">Productos</a>
+                <a href="#licencias">Licencias</a>
+                <a href="#fundadores">Fundadores</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+            <div class="badge">🔒 ID 2607146379465-4AXZQ5</div>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero">
+            <h1>El <span class="highlight">Sello de Confianza</span> para la era de la IA</h1>
+            <p>KRONOS Protocol convierte tu voz, rostro o documento en prueba legal inmutable, válida hasta 2099 con sello eIDAS QTSA.</p>
+            <div class="folio">📜 SafeCreative · QTSA 2022 · SHA256: f03f7e2d85...</div>
+        </section>
+
+        <!-- PRODUCTOS DIRECTOS -->
+        <h2 class="section-title" id="productos">🛒 Productos directos <span>— para creadores y autónomos</span></h2>
+        <div class="grid-2">
+            <div class="card">
+                <h3>Guía SafeCreative</h3>
+                <div class="price">$199 MXN</div>
+                <p>Paso a paso para registrar tu obra y blindarla contra entrenamiento de IA. Formato PDF + video.</p>
+                <a href="https://buy.stripe.com/eVq28r6PaeoSfDH4N47ss02" target="_blank" class="btn">Comprar ahora</a>
+            </div>
+            <div class="card">
+                <h3>Plantilla de Certificado</h3>
+                <div class="price">$297 MXN</div>
+                <p>Diseño profesional editable para tus clientes. Incluye guía de llenado y entrega por WhatsApp.</p>
+                <a href="https://buy.stripe.com/eVq28r6PaeoSfDH4N47ss02" target="_blank" class="btn cyan">Comprar ahora</a>
+            </div>
+            <div class="card">
+                <h3>Auditoría Legal</h3>
+                <div class="price">$1,500 MXN</div>
+                <p>Revisión de tu registro, blindaje y pitch para fondos de inversión. Incluye análisis de riesgo AI Act.</p>
+                <a href="https://wa.me/5217225862335?text=Quiero%20auditor%C3%ADa%20KRONOS" target="_blank" class="btn">Cotizar</a>
+            </div>
+            <div class="card">
+                <h3>Lectura de Carta Astral</h3>
+                <div class="price">$199 MXN</div>
+                <p>Carta natal personalizada + audio explicativo de 8 min. Para quienes buscan claridad.</p>
+                <a href="https://buy.stripe.com/eVq28r6PaeoSfDH4N47ss02" target="_blank" class="btn cyan">Comprar ahora</a>
+            </div>
+        </div>
+
+        <!-- LICENCIAS CORPORATIVAS -->
+        <h2 class="section-title" id="licencias">🏛️ Licencias corporativas <span>— para notarías, legaltech y family offices</span></h2>
+        <div class="grid-2">
+            <div class="card corporate">
+                <h3>Licencia Tier 1</h3>
+                <div class="price" style="color:#00ccff;">Setup $150k + $180k/año</div>
+                <p>Incluye NDA blindado, contrato de licencia, cláusula anti-IA, exclusividad sectorial (solo 3 en México).</p>
+                <a href="https://wa.me/5217225862335?text=Quiero%20licencia%20corporativa%20KRONOS" target="_blank" class="btn cyan">Solicitar información</a>
+            </div>
+            <div class="card corporate">
+                <h3>Master License México</h3>
+                <div class="price" style="color:#00ccff;">$8M MXN · 33% participación</div>
+                <p>Exclusividad territorial + transferencia parcial de explotación, sin ceder autoría. Incluye todo el stack.</p>
+                <a href="https://wa.me/5217225862335?text=Quiero%20Master%20License%20KRONOS" target="_blank" class="btn cyan">Contactar</a>
+            </div>
+        </div>
+
+        <!-- BODEGA FUNDADORES -->
+        <h2 class="section-title" id="fundadores">👑 Bodega KRONOS · Fundadores Originales</h2>
+        <div class="founders-box">
+            <p style="color:#b3a5d9;">Los primeros 10 que crean en KRONOS serán Fundadores Originales. Su nombre quedará grabado en la escritura pública y recibirán Sello de por vida + 20 documentos gratuitos.</p>
+            <div class="grid-3">
+                <div class="item"><span class="num">Fundadores 1-3</span><br><span class="precio">$7,000 MXN</span><br><span style="font-size:0.8rem; color:#888;">(precio amigo)</span></div>
+                <div class="item"><span class="num">Fundadores 4-10</span><br><span class="precio">$15,000 MXN</span><br><span style="font-size:0.8rem; color:#888;">(precio real)</span></div>
+                <div class="item"><span class="num">Incluye</span><br><span style="font-size:0.8rem; color:#b3a5d9;">Sello de por vida · 20 docs gratis · Nombre en escritura</span></div>
+            </div>
+            <div class="input-group">
+                <input type="text" placeholder="Tu nombre" id="fundador-nombre">
+                <input type="email" placeholder="Correo electrónico" id="fundador-email">
+                <button class="btn gold-bg" onclick="registrarFundador()">Quiero ser Fundador</button>
+            </div>
+            <div id="fundador-mensaje" style="margin-top:0.5rem; color:#00ccff; font-size:0.9rem;"></div>
+        </div>
+
+        <!-- CONTACTO -->
+        <h2 class="section-title" id="contacto">📬 Contacto directo</h2>
+        <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin:1.5rem 0;">
+            <a href="https://wa.me/5217225862335" target="_blank" class="btn gold-bg" style="font-size:1rem; padding:0.8rem 2.5rem;">💬 WhatsApp</a>
+            <a href="mailto:marco@kronosprotocol.io" class="btn" style="font-size:1rem; padding:0.8rem 2.5rem;">✉️ Correo</a>
+            <a href="https://www.linkedin.com/in/marco-antonio-rojas-valdovinos" target="_blank" class="btn cyan" style="font-size:1rem; padding:0.8rem 2.5rem;">🔗 LinkedIn</a>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <span><span class="brand">KRONOS Protocol</span> © 2026 · Marco Antonio Rojas Valdovinos</span>
+            <span>ID: 2607146379465-4AXZQ5 · QTSA 2022 · Toluca, MX</span>
+        </footer>
+
+    </div>
+
+    <script>
+        // === PARTÍCULAS ===
+        (function() {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const NUM = 50;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2 + 1;
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.speedY = (Math.random() - 0.5) * 0.3;
+                    this.opacity = Math.random() * 0.4 + 0.15;
+                    this.color = ['#D4AF37', '#00ccff', '#b3a5d9'][Math.floor(Math.random() * 3)];
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > w) this.speedX *= -1;
+                    if (this.y < 0 || this.y > h) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 6;
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            for (let i = 0; i < NUM; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => { p.update(); p.draw(); });
+                ctx.globalAlpha = 0.03;
+                ctx.strokeStyle = '#D4AF37';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        if (Math.sqrt(dx*dx + dy*dy) < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                ctx.globalAlpha = 1;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // === FUNCIÓN REGISTRO FUNDADOR ===
+        function registrarFundador() {
+            const nombre = document.getElementById('fundador-nombre').value.trim();
+            const email = document.getElementById('fundador-email').value.trim();
+            const mensaje = document.getElementById('fundador-mensaje');
+            if (!nombre || !email) {
+                mensaje.style.color = '#ff6666';
+                mensaje.textContent = 'Por favor, completa tu nombre y correo.';
+                return;
+            }
+            // Simular envío: redirige a WhatsApp con los datos
+            const msg = `Hola Marco, quiero ser Fundador Original de KRONOS. Mi nombre: ${nombre}, mi correo: ${email}`;
+            window.open(`https://wa.me/5217225862335?text=${encodeURIComponent(msg)}`, '_blank');
+            mensaje.style.color = '#00ccff';
+            mensaje.textContent = '✅ ¡Listo! Te contactaré por WhatsApp para confirmar tu lugar como Fundador.';
+            document.getElementById('fundador-nombre').value = '';
+            document.getElementById('fundador-email').value = '';
+        }
+    </script>
+</body>
+</html>
